@@ -1,0 +1,21 @@
+{
+    "compilerOptions": {
+        "module": "commonjs",
+        "noImplicitAny": false,
+        "sourceRoot": "src",
+        "outDir": "built",
+        "sourceMap": true,
+        "baseUrl": ".",
+        "paths": {
+            "*": ["node_modules/*"]
+        },
+        "lib": [ "es2016" ]
+    },
+    "include": [
+        "**/*"
+    ],
+    "exclude": [
+        "node_modules",
+        "**/*.spec.ts"
+    ]
+}

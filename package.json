@@ -1,0 +1,20 @@
+{
+    "name": "mturk",
+    "version": "1.0.0",
+    "description": "",
+    "main": "src/main.ts",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "build": "./node_modules/.bin/tsc",
+        "start": "npm run build;node ./built/main.js"
+    },
+    "author": "",
+    "license": "ISC",
+    "dependencies": {
+        "@types/node": "^4.0.36",
+        "mturk-api": "^3.0.2"
+    },
+    "devDependencies": {
+        "typescript": "^2.7.1"
+    }
+}
