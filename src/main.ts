@@ -1,4 +1,40 @@
 import * as mturk from 'mturk-api';
+import * as _ from 'underscore';
+import {readFile} from 'fs';
+import {join} from 'path';
 
+const MTURK_CONFIG = {
+    access : 'AKIAJCWMFJPWOIPQKRBA',
+    secret : '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',
+    sandbox: true
+};
 
-console.log(mturk);
+const clientPromise = mturk.createClient(MTURK_CONFIG);
+
+clientPromise.then((api) => {
+    getFileContents(join(__dirname, '..', 'templates', 'HTMLQuestion.xml')).then((fileContents) => {
+        api.req('CreateHIT', {
+            'Title': 'Test HIT',
+            'Description': 'Testing 123',
+            'AssignmentDurationInSeconds': 60,
+            'LifetimeInSeconds': 60,
+            'Reward': {CurrencyCode:'USD', Amount:0.01},
+            'Question': _.escape(fileContents)
+        }).then((res) => {
+            console.log(res);
+            api.req('SearchHITs', {'PageSize': 1}).then((res) => {
+                console.log(res);
+                console.log(res.SearchHITsResult);
+            });
+        }).catch(console.error);
+    });
+});
+
+function getFileContents(fileName:string):Promise<string> {
+    return new Promise<string>((resolve, reject) => {
+        readFile(fileName, 'utf8', (err, data) => {
+            if(err) { reject(err); }
+            else { resolve(data); }
+        });
+    });
+};
