@@ -1,22 +1,23 @@
 {
-    "name": "mturk",
-    "version": "1.0.0",
-    "description": "",
-    "main": "src/main.ts",
-    "scripts": {
-        "test": "echo \"Error: no test specified\" && exit 1",
-        "build": "./node_modules/.bin/tsc",
-        "start": "npm run build;node ./built/main.js"
-    },
-    "author": "",
-    "license": "ISC",
-    "dependencies": {
-        "@types/node": "^4.0.36",
-        "@types/underscore": "^1.8.7",
-        "mturk-api": "^3.0.2",
-        "underscore": "^1.8.3"
-    },
-    "devDependencies": {
-        "typescript": "^2.7.1"
-    }
+  "name": "mturk",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/main.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "./node_modules/.bin/tsc",
+    "start": "npm run build;node ./built/main.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@types/node": "^4.0.36",
+    "@types/underscore": "^1.8.7",
+    "aws-sdk": "^2.192.0",
+    "mturk-api": "^3.0.2",
+    "underscore": "^1.8.3"
+  },
+  "devDependencies": {
+    "typescript": "^2.7.1"
+  }
 }
