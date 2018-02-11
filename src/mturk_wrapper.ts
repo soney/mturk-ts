@@ -1,64 +1,95 @@
-import * as mturk from 'mturk-api';
 import * as _ from 'underscore';
 import * as fs from 'fs';
 import {join} from 'path';
+import AWS = require('aws-sdk');
+import MTurk = require('aws-sdk/clients/mturk');
+import parse = require('xml-parser');
 
-export interface MechanicalTurkOptions {
-    currencyCode:mturk.API.CurrencyCode
-};
+const REGION:string = 'us-east-1';
+const PRODUCTION:string = 'https://mturk-requester.us-east-1.amazonaws.com';
+const SANDBOX:string = 'https://mturk-requester-sandbox.us-east-1.amazonaws.com';
+const API_VERSION:string = '2017-01-17';
+
 
 export class MechanicalTurkHIT {
-    constructor(private mturk:MechanicalTurk, private info:mturk.API.HIT) {
+    constructor(private mturk:MechanicalTurk, private info:MTurk.HIT) {
     };
-    private setInfO(info:mturk.API.HIT) {
+    private setInfo(info:MTurk.HIT) {
         this.info = info;
     }
-    private getID():mturk.API.HITID { return this.info.HITId; }
-    public async disable():Promise<boolean> {
-        return this.mturk.disableHIT(this.getID());
+    public getID():string { return this.info.HITId; };
+    public getTitle():string { return this.info.Title; };
+
+    public async delete():Promise<void> {
+        return this.mturk.deleteHIT({HITId: this.getID()});
     };
-    public async dispose():Promise<boolean> {
-        return this.mturk.disposeHIT(this.getID());
+    public async refresh():Promise<void> {
+        this.info = await this.mturk.getRawHIT({HITId: this.getID()});
     };
-    public async listAssignments() {
-        return this.mturk.disposeHIT(this.getID());
-    };
-    public async setHITAsReviewing() {
-        return this.mturk.setHITAsReviewing(this.getID());
-    };
-    public getReviewStatus():mturk.API.HITReviewStatus {
-        return this.info.HITReviewStatus;
+    public async listAssignments():Promise<Array<MechanicalTurkAssignment>> {
+        const rawAssignments = await this.mturk.listRawAssignmentsForHIT({HITId: this.getID()});
+        return rawAssignments.map((assignment:MTurk.Assignment) => new MechanicalTurkAssignment(this.mturk, this, assignment));
     };
     public toString():string {
         return `HIT ${this.getID()}`;
     };
-    public async refresh():Promise<void> {
-        this.info = await this.mturk.getRawHIT(this.getID());
+};
+export class MechanicalTurkAssignment {
+    constructor(private mturk:MechanicalTurk, private hit:MechanicalTurkHIT, private info:MTurk.Assignment) {
+    };
+    public getID():string { return this.info.AssignmentId; };
+    public getWorkerID():string { return this.info.WorkerId; };
+    public getStatus():string { return this.info.AssignmentStatus; };
+    public getAnswerString():string { return this.info.Answer; };
+    public async approve(OverrideRejection:boolean = false, RequesterFeedback:string = ''):Promise<void> {
+        await this.mturk.approveAssignment({ AssignmentId: this.getID(), OverrideRejection, RequesterFeedback });
+    };
+    public async reject(RequesterFeedback:string):Promise<void> {
+        await this.mturk.approveAssignment({ AssignmentId: this.getID(), RequesterFeedback });
+    };
+    public getAnswers():Map<string, string> {
+        const data = parse(this.getAnswerString());
+        const {root} = data;
+        const result:Map<string, string> = new Map<string, string>();
+        root.children.forEach((child) => {
+            const {name} = child;
+            if(name === 'Answer') {
+                const {children} = child;
+                let identifier:string;
+                let value:string;
+                children.forEach((c) => {
+                    const {name, content} = c;
+                    if(name === 'QuestionIdentifier') {
+                        identifier = content;
+                    } else {
+                        value = content;
+                    }
+                });
+                if(identifier && value) {
+                    result.set(identifier, value);
+                }
+            }
+        });
+        return result;
     };
 };
 
 export class MechanicalTurk {
-    private static defaultOptions:MechanicalTurkOptions = {
-        currencyCode: 'USD'
-    };
-    private mturkAPI:mturk.API;
-    private readyPromise:Promise<this>;
-    private options:MechanicalTurkOptions;
-    constructor(options?:MechanicalTurkOptions, configFileName:string=join(__dirname, '..', 'mturk_creds.json')) {
-        this.options = _.extend({}, MechanicalTurk.defaultOptions, options);
-        this.readyPromise = this.loadConfigFile(configFileName).then((config:mturk.Config) => {
-            return mturk.createClient(config);
-        }).catch((err) => {
-            throw new Error(`Could not read config file ${configFileName}. See mturk_creds.sample.json for an example format`);
-        }).then((mturkAPI:mturk.API) => {
-            this.mturkAPI = mturkAPI;
-            return this;
+    private mturk:Promise<MTurk>;
+    constructor(configFileName:string=join(__dirname, '..', 'mturk_creds.json')) {
+        this.mturk = this.loadConfigFile(configFileName).then((config) => {
+            return new MTurk({
+                region: REGION,
+                endpoint: config.sandbox ? SANDBOX : PRODUCTION,
+                accessKeyId: config.access,
+                secretAccessKey: config.secret,
+                apiVersion: API_VERSION
+            });
         }, (err) => {
-            console.error(err);
-            throw(err);
+            throw new Error(`Could not read config file ${configFileName}. See mturk_creds.sample.json for an example format`);
         });
     };
-    private loadConfigFile(fileName:string):Promise<mturk.Config> {
+    private loadConfigFile(fileName:string):Promise<{sandbox?:boolean, access:string, secret:string}> {
         return fileExists(fileName).then((exists:boolean) => {
             if(exists) {
                 return getFileContents(fileName);
@@ -69,80 +100,95 @@ export class MechanicalTurk {
             return JSON.parse(contents);
         });
     };
-    public async ready():Promise<this> {
-        return this.readyPromise;
-    };
     public async getAccountBalance():Promise<number> {
-        await this.ready();
-        return this.mturkAPI.req('GetAccountBalance').then((result) => {
-            const firstResult = result.GetAccountBalanceResult[0];
-            const {AvailableBalance} = firstResult;
-            if(AvailableBalance.CurrencyCode === this.options.currencyCode) {
-                return parseFloat(AvailableBalance.Amount);
-            } else {
-                throw new Error(`Result currency code (${AvailableBalance.CurrencyCode}) does not mach specified option currency code ${this.options.currencyCode}`);
-            }
+        const mturk:MTurk = await this.mturk;
+        return new Promise<number>((resolve, reject) => {
+            mturk.getAccountBalance({}, (err, data) => {
+                if(err) { reject(err); }
+                else { resolve(parseFloat(data.AvailableBalance)); }
+            });
         });
     };
-    public async createHIT(title:string, description:string, durationInSeconds:number, lifetimeInSeconds:number, rewardAmount:number, question:string):Promise<MechanicalTurkHIT> {
-        await this.ready();
-        const options:mturk.API.CreateHITParams = {
-            Title: title,
-            Description: description,
-            AssignmentDurationInSeconds: durationInSeconds,
-            LifetimeInSeconds: lifetimeInSeconds,
-            Reward: { CurrencyCode: this.options.currencyCode, Amount: rewardAmount },
-            Question: question
-        };
-        return this.mturkAPI.req('CreateHIT', options).then((result) => {
-            const HITResult = result.HIT[0];
-            return this.getHIT(HITResult.HITId);
+
+    public async createHIT(options:MTurk.CreateHITRequest):Promise<MechanicalTurkHIT> {
+        const mturk:MTurk = await this.mturk;
+        return new Promise<MechanicalTurkHIT>((resolve, reject) => {
+            mturk.createHIT(options, (err, data) => {
+                if(err) { reject(err); }
+                else {
+                    resolve(new MechanicalTurkHIT(this, data.HIT));
+                }
+            });
         });
     };
-    public async getRawHIT(HITId:mturk.API.HITID):Promise<mturk.API.HIT> {
-        await this.ready();
-        return this.mturkAPI.req('GetHIT', {HITId}).then((result) => {
-            return result.HIT[0];
+    public async createHITFromFile(questionFileName:string, options:MTurk.CreateHITRequest) {
+        const questionContents = await getFileContents(questionFileName);
+        return this.createHIT(_.extend({}, options, {Question: questionContents}));
+    };
+    public async getRawHIT(options:MTurk.GetHITRequest):Promise<MTurk.HIT> {
+        const mturk:MTurk = await this.mturk;
+        return new Promise<MTurk.HIT>((resolve, reject) => {
+            mturk.getHIT(options, (err, data) => {
+                if(err) { reject(err); }
+                else {
+                    resolve(data.HIT);
+                }
+            });
         });
     };
-    private async getHIT(HITId:mturk.API.HITID):Promise<MechanicalTurkHIT> {
-        const HITResult = await this.getRawHIT(HITId);
+
+    private async getHIT(options:MTurk.GetHITRequest):Promise<MechanicalTurkHIT> {
+        const HITResult = await this.getRawHIT(options);
         return new MechanicalTurkHIT(this, HITResult);
     };
-    public async disposeHIT(HITId:mturk.API.HITID):Promise<boolean> {
-        await this.ready();
-        return this.mturkAPI.req('DisposeHIT', {HITId}).then((result) => {
-            return true;
+
+    public async deleteHIT(options:MTurk.DeleteHITRequest):Promise<void> {
+        const mturk:MTurk = await this.mturk;
+        await new Promise<MTurk.DeleteHITResponse>((resolve, reject) => {
+            mturk.deleteHIT(options, (err, data) => {
+                if(err) { reject(err); }
+                else { resolve(data); }
+            });
         });
     };
-    public async disableHIT(HITId:mturk.API.HITID):Promise<boolean> {
-        await this.ready();
-        return this.mturkAPI.req('DisableHIT', {HITId}).then((result) => {
-            return true;
+
+    public async listHITs(options:MTurk.ListHITsRequest={}):Promise<Array<MechanicalTurkHIT>> {
+        const mturk:MTurk = await this.mturk;
+        return new Promise<Array<MechanicalTurkHIT>>((resolve, reject) => {
+            mturk.listHITs(options, (err, data) => {
+                if(err) { reject(err); }
+                else {
+                    resolve(data.HITs.map((hit:MTurk.HIT) => new MechanicalTurkHIT(this, hit)));
+                }
+            });
         });
     };
-    public async setHITAsReviewing(HITId:mturk.API.HITID):Promise<void> {
-        await this.ready();
-        await this.mturkAPI.req('SetHITAsReviewing', {HITId});
-    };
-    public async listAssignments(HITId:mturk.API.HITID) {
-        await this.ready();
-        return this.mturkAPI.req('ListAssignmentsForHIT', {HITId}).then((result) => {
-            console.log(result);
-            return true;
+
+    public async listRawAssignmentsForHIT(options:MTurk.ListAssignmentsForHITRequest):Promise<Array<MTurk.HIT>> {
+        const mturk:MTurk = await this.mturk;
+        return new Promise<Array<MTurk.HIT>>((resolve, reject) => {
+            mturk.listAssignmentsForHIT(options, (err, data) => {
+                if(err) { reject(err); }
+                else { resolve(data.Assignments); }
+            });
         });
     };
-    public async searchHITs(PageSize:number=1):Promise<Array<MechanicalTurkHIT>> {
-        await this.ready();
-        return this.mturkAPI.req('SearchHITs', {PageSize}).then((result) => {
-            const searchHITsResult = result.SearchHITsResult[0];
-            if(searchHITsResult.NumResults === 0) {
-                return [];
-            } else {
-                return searchHITsResult.HIT.map((hit:mturk.API.HIT) => {
-                    return new MechanicalTurkHIT(this, hit);
-                });
-            }
+    public async approveAssignment(params:MTurk.ApproveAssignmentRequest):Promise<MTurk.ApproveAssignmentResponse> {
+        const mturk:MTurk = await this.mturk;
+        return new Promise<MTurk.ApproveAssignmentResponse>((resolve, reject) => {
+            mturk.approveAssignment(params, (err, data) => {
+                if(err) { reject(err); }
+                else { resolve(data); }
+            });
+        });
+    };
+    public async rejectAssignment(params:MTurk.RejectAssignmentRequest):Promise<MTurk.RejectAssignmentResponse> {
+        const mturk:MTurk = await this.mturk;
+        return new Promise<MTurk.RejectAssignmentResponse>((resolve, reject) => {
+            mturk.rejectAssignment(params, (err, data) => {
+                if(err) { reject(err); }
+                else { resolve(data); }
+            });
         });
     };
 };

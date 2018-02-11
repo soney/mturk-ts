@@ -37,68 +37,36 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 var _this = this;
 exports.__esModule = true;
 var mturk_wrapper_1 = require("./mturk_wrapper");
-var path_1 = require("path");
-var fs_1 = require("fs");
-var mturk = new mturk_wrapper_1.MechanicalTurk();
-mturk.getAccountBalance().then(function (balance) {
-    console.log(balance);
-});
-getFileContents(path_1.join(__dirname, '..', 'templates', 'HTMLQuestion.xml')).then(function (fileContents) { return __awaiter(_this, void 0, void 0, function () {
-    var y, h;
+(function () { return __awaiter(_this, void 0, void 0, function () {
+    var _this = this;
+    var mturk, hits;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, mturk.searchHITs(20)];
+            case 0:
+                mturk = new mturk_wrapper_1.MechanicalTurk();
+                return [4 /*yield*/, mturk.listHITs({ MaxResults: 10 })];
             case 1:
-                y = _a.sent();
-                h = y[0];
-                h.listAssignments();
+                hits = _a.sent();
+                hits.forEach(function (h) { return __awaiter(_this, void 0, void 0, function () {
+                    var assignments;
+                    return __generator(this, function (_a) {
+                        switch (_a.label) {
+                            case 0: return [4 /*yield*/, h.listAssignments()];
+                            case 1:
+                                assignments = _a.sent();
+                                assignments.forEach(function (a, i) {
+                                    a.getAnswers().forEach(function (v, k) {
+                                        console.log(k);
+                                        console.log(v);
+                                    });
+                                    // console.log(h.getTitle());
+                                });
+                                return [2 /*return*/];
+                        }
+                    });
+                }); });
                 return [2 /*return*/];
         }
     });
-}); });
-// import * as mturk from 'mturk-api';
-// import * as _ from 'underscore';
-// import {readFile} from 'fs';
-// import {join} from 'path';
-//
-// const MTURK_CONFIG = {
-//     access : 'AKIAJCWMFJPWOIPQKRBA',
-//     secret : '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',
-//     sandbox: true
-// };
-//
-// const clientPromise = mturk.createClient(MTURK_CONFIG);
-//
-// clientPromise.then((api) => {
-//     getFileContents(join(__dirname, '..', 'templates', 'HTMLQuestion.xml')).then((fileContents) => {
-//         api.req('CreateHIT', {
-//             'Title': 'Test HIT',
-//             'Description': 'Testing 123',
-//             'AssignmentDurationInSeconds': 60,
-//             'LifetimeInSeconds': 60,
-//             'Reward': {CurrencyCode:'USD', Amount:0.01},
-//             'Question': _.escape(fileContents)
-//         }).then((res) => {
-//             // console.log(res.HIT[0].Request);
-//             // api.req('SearchHITs', {'PageSize': 1}).then((res) => {
-//             //     console.log(res);
-//             //     console.log(res.SearchHITsResult);
-//             // });
-//         }).catch(console.error);
-//     });
-// });
-//
-function getFileContents(fileName) {
-    return new Promise(function (resolve, reject) {
-        fs_1.readFile(fileName, 'utf8', function (err, data) {
-            if (err) {
-                reject(err);
-            }
-            else {
-                resolve(data);
-            }
-        });
-    });
-}
-;
+}); })();
 //# sourceMappingURL=main.js.map

@@ -35,59 +35,34 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 exports.__esModule = true;
-var mturk = require("mturk-api");
 var _ = require("underscore");
 var fs = require("fs");
 var path_1 = require("path");
-;
+var MTurk = require("aws-sdk/clients/mturk");
+var parse = require("xml-parser");
+var REGION = 'us-east-1';
+var PRODUCTION = 'https://mturk-requester.us-east-1.amazonaws.com';
+var SANDBOX = 'https://mturk-requester-sandbox.us-east-1.amazonaws.com';
+var API_VERSION = '2017-01-17';
 var MechanicalTurkHIT = /** @class */ (function () {
     function MechanicalTurkHIT(mturk, info) {
         this.mturk = mturk;
         this.info = info;
     }
     ;
-    MechanicalTurkHIT.prototype.setInfO = function (info) {
+    MechanicalTurkHIT.prototype.setInfo = function (info) {
         this.info = info;
     };
     MechanicalTurkHIT.prototype.getID = function () { return this.info.HITId; };
-    MechanicalTurkHIT.prototype.disable = function () {
+    ;
+    MechanicalTurkHIT.prototype.getTitle = function () { return this.info.Title; };
+    ;
+    MechanicalTurkHIT.prototype["delete"] = function () {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
-                return [2 /*return*/, this.mturk.disableHIT(this.getID())];
+                return [2 /*return*/, this.mturk.deleteHIT({ HITId: this.getID() })];
             });
         });
-    };
-    ;
-    MechanicalTurkHIT.prototype.dispose = function () {
-        return __awaiter(this, void 0, void 0, function () {
-            return __generator(this, function (_a) {
-                return [2 /*return*/, this.mturk.disposeHIT(this.getID())];
-            });
-        });
-    };
-    ;
-    MechanicalTurkHIT.prototype.listAssignments = function () {
-        return __awaiter(this, void 0, void 0, function () {
-            return __generator(this, function (_a) {
-                return [2 /*return*/, this.mturk.disposeHIT(this.getID())];
-            });
-        });
-    };
-    ;
-    MechanicalTurkHIT.prototype.setHITAsReviewing = function () {
-        return __awaiter(this, void 0, void 0, function () {
-            return __generator(this, function (_a) {
-                return [2 /*return*/, this.mturk.setHITAsReviewing(this.getID())];
-            });
-        });
-    };
-    ;
-    MechanicalTurkHIT.prototype.getReviewStatus = function () {
-        return this.info.HITReviewStatus;
-    };
-    ;
-    MechanicalTurkHIT.prototype.toString = function () {
-        return "HIT " + this.getID();
     };
     ;
     MechanicalTurkHIT.prototype.refresh = function () {
@@ -97,7 +72,7 @@ var MechanicalTurkHIT = /** @class */ (function () {
                 switch (_b.label) {
                     case 0:
                         _a = this;
-                        return [4 /*yield*/, this.mturk.getRawHIT(this.getID())];
+                        return [4 /*yield*/, this.mturk.getRawHIT({ HITId: this.getID() })];
                     case 1:
                         _a.info = _b.sent();
                         return [2 /*return*/];
@@ -106,25 +81,116 @@ var MechanicalTurkHIT = /** @class */ (function () {
         });
     };
     ;
+    MechanicalTurkHIT.prototype.listAssignments = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var _this = this;
+            var rawAssignments;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.mturk.listRawAssignmentsForHIT({ HITId: this.getID() })];
+                    case 1:
+                        rawAssignments = _a.sent();
+                        return [2 /*return*/, rawAssignments.map(function (assignment) { return new MechanicalTurkAssignment(_this.mturk, _this, assignment); })];
+                }
+            });
+        });
+    };
+    ;
+    MechanicalTurkHIT.prototype.toString = function () {
+        return "HIT " + this.getID();
+    };
+    ;
     return MechanicalTurkHIT;
 }());
 exports.MechanicalTurkHIT = MechanicalTurkHIT;
 ;
+var MechanicalTurkAssignment = /** @class */ (function () {
+    function MechanicalTurkAssignment(mturk, hit, info) {
+        this.mturk = mturk;
+        this.hit = hit;
+        this.info = info;
+    }
+    ;
+    MechanicalTurkAssignment.prototype.getID = function () { return this.info.AssignmentId; };
+    ;
+    MechanicalTurkAssignment.prototype.getWorkerID = function () { return this.info.WorkerId; };
+    ;
+    MechanicalTurkAssignment.prototype.getStatus = function () { return this.info.AssignmentStatus; };
+    ;
+    MechanicalTurkAssignment.prototype.getAnswerString = function () { return this.info.Answer; };
+    ;
+    MechanicalTurkAssignment.prototype.approve = function (OverrideRejection, RequesterFeedback) {
+        if (OverrideRejection === void 0) { OverrideRejection = false; }
+        if (RequesterFeedback === void 0) { RequesterFeedback = ''; }
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.mturk.approveAssignment({ AssignmentId: this.getID(), OverrideRejection: OverrideRejection, RequesterFeedback: RequesterFeedback })];
+                    case 1:
+                        _a.sent();
+                        return [2 /*return*/];
+                }
+            });
+        });
+    };
+    ;
+    MechanicalTurkAssignment.prototype.reject = function (RequesterFeedback) {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.mturk.approveAssignment({ AssignmentId: this.getID(), RequesterFeedback: RequesterFeedback })];
+                    case 1:
+                        _a.sent();
+                        return [2 /*return*/];
+                }
+            });
+        });
+    };
+    ;
+    MechanicalTurkAssignment.prototype.getAnswers = function () {
+        var data = parse(this.getAnswerString());
+        var root = data.root;
+        var result = new Map();
+        root.children.forEach(function (child) {
+            var name = child.name;
+            if (name === 'Answer') {
+                var children = child.children;
+                var identifier_1;
+                var value_1;
+                children.forEach(function (c) {
+                    var name = c.name, content = c.content;
+                    if (name === 'QuestionIdentifier') {
+                        identifier_1 = content;
+                    }
+                    else {
+                        value_1 = content;
+                    }
+                });
+                if (identifier_1 && value_1) {
+                    result.set(identifier_1, value_1);
+                }
+            }
+        });
+        return result;
+    };
+    ;
+    return MechanicalTurkAssignment;
+}());
+exports.MechanicalTurkAssignment = MechanicalTurkAssignment;
+;
 var MechanicalTurk = /** @class */ (function () {
-    function MechanicalTurk(options, configFileName) {
+    function MechanicalTurk(configFileName) {
         if (configFileName === void 0) { configFileName = path_1.join(__dirname, '..', 'mturk_creds.json'); }
-        var _this = this;
-        this.options = _.extend({}, MechanicalTurk.defaultOptions, options);
-        this.readyPromise = this.loadConfigFile(configFileName).then(function (config) {
-            return mturk.createClient(config);
-        })["catch"](function (err) {
-            throw new Error("Could not read config file " + configFileName + ". See mturk_creds.sample.json for an example format");
-        }).then(function (mturkAPI) {
-            _this.mturkAPI = mturkAPI;
-            return _this;
+        this.mturk = this.loadConfigFile(configFileName).then(function (config) {
+            return new MTurk({
+                region: REGION,
+                endpoint: config.sandbox ? SANDBOX : PRODUCTION,
+                accessKeyId: config.access,
+                secretAccessKey: config.secret,
+                apiVersion: API_VERSION
+            });
         }, function (err) {
-            console.error(err);
-            throw (err);
+            throw new Error("Could not read config file " + configFileName + ". See mturk_creds.sample.json for an example format");
         });
     }
     ;
@@ -141,84 +207,96 @@ var MechanicalTurk = /** @class */ (function () {
         });
     };
     ;
-    MechanicalTurk.prototype.ready = function () {
-        return __awaiter(this, void 0, void 0, function () {
-            return __generator(this, function (_a) {
-                return [2 /*return*/, this.readyPromise];
-            });
-        });
-    };
-    ;
     MechanicalTurk.prototype.getAccountBalance = function () {
         return __awaiter(this, void 0, void 0, function () {
-            var _this = this;
+            var mturk;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, this.ready()];
+                    case 0: return [4 /*yield*/, this.mturk];
                     case 1:
-                        _a.sent();
-                        return [2 /*return*/, this.mturkAPI.req('GetAccountBalance').then(function (result) {
-                                var firstResult = result.GetAccountBalanceResult[0];
-                                var AvailableBalance = firstResult.AvailableBalance;
-                                if (AvailableBalance.CurrencyCode === _this.options.currencyCode) {
-                                    return parseFloat(AvailableBalance.Amount);
-                                }
-                                else {
-                                    throw new Error("Result currency code (" + AvailableBalance.CurrencyCode + ") does not mach specified option currency code " + _this.options.currencyCode);
-                                }
+                        mturk = _a.sent();
+                        return [2 /*return*/, new Promise(function (resolve, reject) {
+                                mturk.getAccountBalance({}, function (err, data) {
+                                    if (err) {
+                                        reject(err);
+                                    }
+                                    else {
+                                        resolve(parseFloat(data.AvailableBalance));
+                                    }
+                                });
                             })];
                 }
             });
         });
     };
     ;
-    MechanicalTurk.prototype.createHIT = function (title, description, durationInSeconds, lifetimeInSeconds, rewardAmount, question) {
+    MechanicalTurk.prototype.createHIT = function (options) {
         return __awaiter(this, void 0, void 0, function () {
             var _this = this;
-            var options;
+            var mturk;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, this.ready()];
+                    case 0: return [4 /*yield*/, this.mturk];
                     case 1:
-                        _a.sent();
-                        options = {
-                            Title: title,
-                            Description: description,
-                            AssignmentDurationInSeconds: durationInSeconds,
-                            LifetimeInSeconds: lifetimeInSeconds,
-                            Reward: { CurrencyCode: this.options.currencyCode, Amount: rewardAmount },
-                            Question: question
-                        };
-                        return [2 /*return*/, this.mturkAPI.req('CreateHIT', options).then(function (result) {
-                                var HITResult = result.HIT[0];
-                                return _this.getHIT(HITResult.HITId);
+                        mturk = _a.sent();
+                        return [2 /*return*/, new Promise(function (resolve, reject) {
+                                mturk.createHIT(options, function (err, data) {
+                                    if (err) {
+                                        reject(err);
+                                    }
+                                    else {
+                                        resolve(new MechanicalTurkHIT(_this, data.HIT));
+                                    }
+                                });
                             })];
                 }
             });
         });
     };
     ;
-    MechanicalTurk.prototype.getRawHIT = function (HITId) {
+    MechanicalTurk.prototype.createHITFromFile = function (questionFileName, options) {
         return __awaiter(this, void 0, void 0, function () {
+            var questionContents;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, this.ready()];
+                    case 0: return [4 /*yield*/, getFileContents(questionFileName)];
                     case 1:
-                        _a.sent();
-                        return [2 /*return*/, this.mturkAPI.req('GetHIT', { HITId: HITId }).then(function (result) {
-                                return result.HIT[0];
+                        questionContents = _a.sent();
+                        return [2 /*return*/, this.createHIT(_.extend({}, options, { Question: questionContents }))];
+                }
+            });
+        });
+    };
+    ;
+    MechanicalTurk.prototype.getRawHIT = function (options) {
+        return __awaiter(this, void 0, void 0, function () {
+            var mturk;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.mturk];
+                    case 1:
+                        mturk = _a.sent();
+                        return [2 /*return*/, new Promise(function (resolve, reject) {
+                                mturk.getHIT(options, function (err, data) {
+                                    if (err) {
+                                        reject(err);
+                                    }
+                                    else {
+                                        resolve(data.HIT);
+                                    }
+                                });
                             })];
                 }
             });
         });
     };
     ;
-    MechanicalTurk.prototype.getHIT = function (HITId) {
+    MechanicalTurk.prototype.getHIT = function (options) {
         return __awaiter(this, void 0, void 0, function () {
             var HITResult;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, this.getRawHIT(HITId)];
+                    case 0: return [4 /*yield*/, this.getRawHIT(options)];
                     case 1:
                         HITResult = _a.sent();
                         return [2 /*return*/, new MechanicalTurkHIT(this, HITResult)];
@@ -227,44 +305,24 @@ var MechanicalTurk = /** @class */ (function () {
         });
     };
     ;
-    MechanicalTurk.prototype.disposeHIT = function (HITId) {
+    MechanicalTurk.prototype.deleteHIT = function (options) {
         return __awaiter(this, void 0, void 0, function () {
+            var mturk;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, this.ready()];
+                    case 0: return [4 /*yield*/, this.mturk];
                     case 1:
-                        _a.sent();
-                        return [2 /*return*/, this.mturkAPI.req('DisposeHIT', { HITId: HITId }).then(function (result) {
-                                return true;
+                        mturk = _a.sent();
+                        return [4 /*yield*/, new Promise(function (resolve, reject) {
+                                mturk.deleteHIT(options, function (err, data) {
+                                    if (err) {
+                                        reject(err);
+                                    }
+                                    else {
+                                        resolve(data);
+                                    }
+                                });
                             })];
-                }
-            });
-        });
-    };
-    ;
-    MechanicalTurk.prototype.disableHIT = function (HITId) {
-        return __awaiter(this, void 0, void 0, function () {
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0: return [4 /*yield*/, this.ready()];
-                    case 1:
-                        _a.sent();
-                        return [2 /*return*/, this.mturkAPI.req('DisableHIT', { HITId: HITId }).then(function (result) {
-                                return true;
-                            })];
-                }
-            });
-        });
-    };
-    ;
-    MechanicalTurk.prototype.setHITAsReviewing = function (HITId) {
-        return __awaiter(this, void 0, void 0, function () {
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0: return [4 /*yield*/, this.ready()];
-                    case 1:
-                        _a.sent();
-                        return [4 /*yield*/, this.mturkAPI.req('SetHITAsReviewing', { HITId: HITId })];
                     case 2:
                         _a.sent();
                         return [2 /*return*/];
@@ -273,50 +331,100 @@ var MechanicalTurk = /** @class */ (function () {
         });
     };
     ;
-    MechanicalTurk.prototype.listAssignments = function (HITId) {
-        return __awaiter(this, void 0, void 0, function () {
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0: return [4 /*yield*/, this.ready()];
-                    case 1:
-                        _a.sent();
-                        return [2 /*return*/, this.mturkAPI.req('ListAssignmentsForHIT', { HITId: HITId }).then(function (result) {
-                                console.log(result);
-                                return true;
-                            })];
-                }
-            });
-        });
-    };
-    ;
-    MechanicalTurk.prototype.searchHITs = function (PageSize) {
-        if (PageSize === void 0) { PageSize = 1; }
+    MechanicalTurk.prototype.listHITs = function (options) {
+        if (options === void 0) { options = {}; }
         return __awaiter(this, void 0, void 0, function () {
             var _this = this;
+            var mturk;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, this.ready()];
+                    case 0: return [4 /*yield*/, this.mturk];
                     case 1:
-                        _a.sent();
-                        return [2 /*return*/, this.mturkAPI.req('SearchHITs', { PageSize: PageSize }).then(function (result) {
-                                var searchHITsResult = result.SearchHITsResult[0];
-                                if (searchHITsResult.NumResults === 0) {
-                                    return [];
-                                }
-                                else {
-                                    return searchHITsResult.HIT.map(function (hit) {
-                                        return new MechanicalTurkHIT(_this, hit);
-                                    });
-                                }
+                        mturk = _a.sent();
+                        return [2 /*return*/, new Promise(function (resolve, reject) {
+                                mturk.listHITs(options, function (err, data) {
+                                    if (err) {
+                                        reject(err);
+                                    }
+                                    else {
+                                        resolve(data.HITs.map(function (hit) { return new MechanicalTurkHIT(_this, hit); }));
+                                    }
+                                });
                             })];
                 }
             });
         });
     };
     ;
-    MechanicalTurk.defaultOptions = {
-        currencyCode: 'USD'
+    MechanicalTurk.prototype.listRawAssignmentsForHIT = function (options) {
+        return __awaiter(this, void 0, void 0, function () {
+            var mturk;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.mturk];
+                    case 1:
+                        mturk = _a.sent();
+                        return [2 /*return*/, new Promise(function (resolve, reject) {
+                                mturk.listAssignmentsForHIT(options, function (err, data) {
+                                    if (err) {
+                                        reject(err);
+                                    }
+                                    else {
+                                        resolve(data.Assignments);
+                                    }
+                                });
+                            })];
+                }
+            });
+        });
     };
+    ;
+    MechanicalTurk.prototype.approveAssignment = function (params) {
+        return __awaiter(this, void 0, void 0, function () {
+            var mturk;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.mturk];
+                    case 1:
+                        mturk = _a.sent();
+                        return [2 /*return*/, new Promise(function (resolve, reject) {
+                                mturk.approveAssignment(params, function (err, data) {
+                                    if (err) {
+                                        reject(err);
+                                    }
+                                    else {
+                                        resolve(data);
+                                    }
+                                });
+                            })];
+                }
+            });
+        });
+    };
+    ;
+    MechanicalTurk.prototype.rejectAssignment = function (params) {
+        return __awaiter(this, void 0, void 0, function () {
+            var mturk;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.mturk];
+                    case 1:
+                        mturk = _a.sent();
+                        return [2 /*return*/, new Promise(function (resolve, reject) {
+                                mturk.rejectAssignment(params, function (err, data) {
+                                    if (err) {
+                                        reject(err);
+                                    }
+                                    else {
+                                        resolve(data);
+                                    }
+                                });
+                            })];
+                }
+            });
+        });
+    };
+    ;
     return MechanicalTurk;
 }());
 exports.MechanicalTurk = MechanicalTurk;
