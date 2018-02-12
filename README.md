@@ -37,19 +37,111 @@ This code makes use of Promises ([documented here](https://developers.google.com
 
 
 ## Getting Started
-Import into your code:
+View the documentation by opening `doc/index.html` in your browser.
 
+### Example Usage:
+Always start with an `import`:
 ```
-import {MechanicalTurk, MechanicalTurkHIT, MechanicalTurkAssignment, MechanicalTurkWorker} from './mturk_wrapper';
-```
-
-`MechanicalTurk` is a wrapper around
-
-## `MechanicalTurk`
-```
-const mturk = new MechanicalTurk();
+import {MechanicalTurk} from './mturk';
 ```
 
+**Get Account Balance**
+```
+import {MechanicalTurk} from './mturk';
+(async () => {
+    const mturk = new MechanicalTurk();
+    const balance = await mturk.getAccountBalance();
+    console.log(balance);
+})();
+```
+
+**Creating a new HIT**
+```
+import {MechanicalTurk} from './mturk';
+(async () => {
+    const mturk = new MechanicalTurk();
+    await mturk.createHITFromFile('AmazonExample.xml', {
+        Title: 'Test HIT 5000',
+        Description: 'Testing the HIT API',
+        LifetimeInSeconds: 600,
+        AssignmentDurationInSeconds: 600,
+        Reward: '0.01',
+        MaxAssignments: 4
+    });
+})();
+```
+
+**Get a List of Workers' Answers**
+```
+import {MechanicalTurk} from './mturk';
+(async () => {
+    const mturk = new MechanicalTurk();
+
+    const hits = await mturk.listHITs({MaxResults: 10});
+    hits.forEach(async (h) => {
+        const assignments = await h.listAssignments();
+        assignments.forEach((a, i) => {
+            a.getAnswers().forEach((v, k) => {
+                console.log('Question', k);
+                console.log('Answer', v);
+            });
+        });
+    });
+})();
+```
+
+**Using a DOT Template**
+```
+import {MechanicalTurk} from './mturk';
+
+interface GitHubMessageTemplate {
+    messages: Array<{
+        identifier:string,
+        displayName:string,
+        text:string
+    }>,
+    messageTypes: Array<{
+        name:string,
+        description:string,
+        example:string
+    }>
+};
+
+const ghData:GitHubMessageTemplate = {
+    messages: [{
+        identifier: 'm1',
+        displayName: 'message1',
+        text: 'This is the first message'
+    }, {
+        identifier: 'm2',
+        displayName: 'message2',
+        text: 'This is the second message'
+    }],
+    messageTypes: [{
+        name: 'Confirmation',
+        description: 'If someone warrants the contribution, or agreement',
+        example: 'This looks mostly good to me!'
+    }, {
+        name: 'Objection',
+        description: 'When someone says something is wrong',
+        example: 'This won\'t work, without a defined datatype'
+    }])
+};
+const GHDiscussionTemplate:string = 'GithubDiscussionTemplate';
+
+(async () => {
+    const mturk = new MechanicalTurk();
+    await mturk.processTemplateFile(GHDiscussionTemplate, 'GithubDiscussion.xml.dot');
+    await mturk.createHITFromTemplate(GHDiscussionTemplate, ghData, {
+        Title: 'Template Test 9000',
+        Description: 'Testing the HIT API with a template',
+        LifetimeInSeconds: 600,
+        AssignmentDurationInSeconds: 600,
+        Reward: '0.01',
+        MaxAssignments: 4
+    });
+})();
+```
 
 ## Viewing Sandbox Tasks
 Unfortunately, Amazon decided to [disable the ability to view HITs created programmatically](https://blog.mturk.com/upcoming-changes-to-the-mturk-requester-website-and-questionform-data-format-f7c3238be58c), so HITs created will not show up on the [requester sandbox](https://requestersandbox.mturk.com/manage). There is a [discussion](https://forums.aws.amazon.com/thread.jspa?messageID=814849&tstart=0) about this decision.
