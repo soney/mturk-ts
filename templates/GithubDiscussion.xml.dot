@@ -1,0 +1,37 @@
+<QuestionForm xmlns="http://mechanicalturk.amazonaws.com/AWSMechanicalTurkDataSchemas/2017-11-06/QuestionForm.xsd">
+    <Overview>
+        <Title>Pull Request Message Classification</Title>
+        <Text>
+            You are helping to classify messages about a pull request (PR), which programmers use to contribute code to a larger project.
+        </Text>
+        {{~it.messageTypes :messageType}}
+            <Text>
+                {{=messageType.name}}: {{=messageType.description}}
+                Example: {{=messageType.example}}
+            </Text>
+        {{~}}
+    </Overview>
+    {{~it.messages :message}}
+        <Question>
+            <QuestionIdentifier>{{=message.identifier}}</QuestionIdentifier>
+            <DisplayName>{{=message.displayName}}</DisplayName>
+            <IsRequired>true</IsRequired>
+            <QuestionContent>
+                <Text>{{=message.text}}</Text>
+            </QuestionContent>
+            <AnswerSpecification>
+                <SelectionAnswer>
+                    <StyleSuggestion>radiobutton</StyleSuggestion>
+                    <Selections>
+                        {{~it.messageTypes :messageType}}
+                            <Selection>
+                                <SelectionIdentifier>{{=messageType.name}}</SelectionIdentifier>
+                                <Text>{{=messageType.name}} ({{=messageType.description}})</Text>
+                            </Selection>
+                        {{~}}
+                    </Selections>
+                </SelectionAnswer>
+            </AnswerSpecification>
+        </Question>
+    {{~}}
+</QuestionForm>
