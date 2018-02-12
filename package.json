@@ -1,24 +1,29 @@
 {
-  "name": "mturk",
-  "version": "0.0.1",
-  "description": "",
-  "main": "src/main.ts",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "./node_modules/.bin/tsc",
-    "start": "npm run build;node ./built/main.js"
-  },
-  "author": "",
-  "license": "ISC",
-  "dependencies": {
-    "@types/node": "^4.0.36",
-    "@types/underscore": "^1.8.7",
-    "@types/xml-parser": "^1.2.29",
-    "aws-sdk": "^2.192.0",
-    "underscore": "^1.8.3",
-    "xml-parser": "^1.2.1"
-  },
-  "devDependencies": {
-    "typescript": "^2.7.1"
-  }
+    "name": "mturk-ts",
+    "version": "0.0.1",
+    "description": "MTurk Typescript Library: A Library for Amazon Mechanical Turk Requesters in TypesScript",
+    "main": "built/mturk.js",
+    "types": "built/index.d.ts",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "build": "./node_modules/.bin/tsc",
+        "start": "npm run build;node ./built/main.js",
+        "typedoc": "./node_modules/.bin/typedoc --mode file --module commonjs --exclude \"**/main.ts/**\" --target ES6 --out doc ./ --excludeExternals --externalPattern \"**/node_modules/**\" --ignoreCompilerErrors"
+    },
+    "author": "Steve Oney",
+    "license": "MIT",
+    "dependencies": {
+        "@types/dot": "^1.1.2",
+        "@types/node": "^4.0.36",
+        "@types/underscore": "^1.8.7",
+        "@types/xml-parser": "^1.2.29",
+        "aws-sdk": "^2.192.0",
+        "dot": "^1.1.2",
+        "underscore": "^1.8.3",
+        "xml-parser": "^1.2.1"
+    },
+    "devDependencies": {
+        "typedoc": "^0.10.0",
+        "typescript": "^2.7.1"
+    }
 }
