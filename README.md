@@ -7,7 +7,7 @@ If you don't know what a *HIT*, *Worker*, *Requester*, *Assignment*, or *Reward*
 
 **Recommended Editor**: [atom.io](https://atom.io/) with the [atom-typescript plugin](https://atom.io/packages/atom-typescript).
 
-Also recommended Atom plugin: [language-dot](https://atom.io/packages/language-dot) for Dot templates.
+Also recommended Atom plugin: [language-dot](https://atom.io/packages/language-dot) for [doT templates](http://olado.github.io/doT/index.html).
 
 ## Setup
 Install [node and npm](https://nodejs.org/en/) (current version). After cloning this repository, go into the cloned directory and install the package dependencies:
@@ -90,7 +90,8 @@ import {MechanicalTurk} from './mturk';
 })();
 ```
 
-**Using a DOT Template**
+**Using a doT Template**
+When using a [doT templates](http://olado.github.io/doT/index.html).
 ```
 import {MechanicalTurk} from './mturk';
 
