@@ -15,6 +15,17 @@ interface GitHubMessageTemplate {
     }>
 };
 
+var fs = require('fs');
+var data;
+fs.readFile('./data.json', handleData);
+var handleData = function(err, data){
+  if(err){
+    throw err;
+  }
+  data = JSON.parse(data)
+}
+console.log(data)
+
 const ghData:GitHubMessageTemplate = {
     messages: [{
         identifier: 'm1',
@@ -107,23 +118,23 @@ const GHDiscussionTemplate:string = 'GithubDiscussionTemplate';
 
 (async () => {
     const mturk = new MechanicalTurk();
-    // await mturk.processTemplateFile(GHDiscussionTemplate, 'GithubDiscussion.xml.dot');
-    // await mturk.createHITFromTemplate(GHDiscussionTemplate, ghData, {
-    //     Title: 'GitHub Pull Requests',
-    //     Description: 'You will be asked to read short messages and describe them.',
-    //     LifetimeInSeconds: 600,
-    //     AssignmentDurationInSeconds: 600,
-    //     Reward: '0.01',
-    //     MaxAssignments: 4
-    // });
-    const hits = await mturk.listHITs({MaxResults: 10});
-    hits.forEach(async (h) => {
-        const assignments = await h.listAssignments();
-        assignments.forEach((a, i) => {
-            a.getAnswers().forEach((v, k) => {
-                console.log('Question', k);
-                console.log('Answer', v);
-            });
-        });
+    await mturk.processTemplateFile(GHDiscussionTemplate, 'GithubDiscussion.xml.dot');
+    await mturk.createHITFromTemplate(GHDiscussionTemplate, ghData, {
+        Title: 'GitHub Pull Requests',
+        Description: 'You will be asked to read short messages and categorize them.',
+        LifetimeInSeconds: 600,
+        AssignmentDurationInSeconds: 600,
+        Reward: '0.02',
+        MaxAssignments: 4
     });
+    // const hits = await mturk.listHITs({MaxResults: 10});
+    // hits.forEach(async (h) => {
+    //     const assignments = await h.listAssignments();
+    //     assignments.forEach((a, i) => {
+    //         a.getAnswers().forEach((v, k) => {
+    //             console.log('Question', k);
+    //             console.log('Answer', v);
+    //         });
+    //     });
+    // });
 })();
