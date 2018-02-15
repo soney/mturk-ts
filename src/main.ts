@@ -4,9 +4,8 @@ import _ = require('underscore');
 
 interface GitHubMessageTemplate {
     messages: Array<{
-        identifier:string,
-        displayName:string,
-        text:string
+        comment_ID:string,
+        body:string
     }>,
     messageTypes: Array<{
         name:string,
@@ -15,27 +14,24 @@ interface GitHubMessageTemplate {
     }>
 };
 
-var fs = require('fs');
-var data;
-fs.readFile('./data.json', handleData);
-var handleData = function(err, data){
-  if(err){
-    throw err;
-  }
-  data = JSON.parse(data)
-}
-console.log(data)
+interface HIT {
+  issue_id: string,
+  comments: GitHubMessageTemplate
+};
 
-const ghData:GitHubMessageTemplate = {
-    messages: [{
-        identifier: 'm1',
-        displayName: 'message1',
-        text: 'This is the first message'
-    }, {
-        identifier: 'm2',
-        displayName: 'message2',
-        text: 'This is the second message'
-    }],
+var data = require("../data.json");
+
+const hits = []
+for (let i_id in data) {
+  var messages_list:GitHubMessageTemplate["messages"] = [];
+  for (let comment in data[i_id]['issue_comments']) {
+    messages_list.push({
+      comment_ID: data[i_id]['issue_comments'][comment]['comment_id'],
+      body: data[i_id]['issue_comments'][comment]['body']
+    });
+  };
+  var ghData:GitHubMessageTemplate = {
+    messages: messages_list,
     messageTypes: _.shuffle([{
         name: 'Confirmation',
         description: 'If someone warrants the contribution, or agreement',
@@ -113,20 +109,29 @@ const ghData:GitHubMessageTemplate = {
         description: 'When main context of the comment is a URL',
         example: 'Refer https:\/\/google.com for more information'
     }])
+  };
+  var hit:HIT = {
+    issue_id: i_id,
+    comments: ghData
+  };
+  hits.push(hit);
 };
+
 const GHDiscussionTemplate:string = 'GithubDiscussionTemplate';
 
 (async () => {
-    const mturk = new MechanicalTurk();
-    await mturk.processTemplateFile(GHDiscussionTemplate, 'GithubDiscussion.xml.dot');
-    await mturk.createHITFromTemplate(GHDiscussionTemplate, ghData, {
-        Title: 'GitHub Pull Requests',
-        Description: 'You will be asked to read short messages and categorize them.',
-        LifetimeInSeconds: 600,
-        AssignmentDurationInSeconds: 600,
-        Reward: '0.02',
-        MaxAssignments: 4
-    });
+    // const mturk = new MechanicalTurk();
+    // await mturk.processTemplateFile(GHDiscussionTemplate, 'GithubDiscussion.xml.dot');
+    // await mturk.createHITFromTemplate(GHDiscussionTemplate, ghData, {
+    //     Title: 'GitHub Pull Requests',
+    //     Description: 'You will be asked to read short messages and categorize them.',
+    //     LifetimeInSeconds: 600,
+    //     AssignmentDurationInSeconds: 600,
+    //     Reward: '0.02',
+    //     MaxAssignments: 4
+    // });
+
+
     // const hits = await mturk.listHITs({MaxResults: 10});
     // hits.forEach(async (h) => {
     //     const assignments = await h.listAssignments();
