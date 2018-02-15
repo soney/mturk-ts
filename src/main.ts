@@ -60,7 +60,7 @@ const ghData:GitHubMessageTemplate = {
     }, {
         name: 'Reject',
         description: 'When someone refuses to merge a request and is willing to close it',
-        example: 'To be honest, I don\'t this this is something many people need so I\'ll go ahead and close this pull request. Thanks for contributing.'
+        example: 'To be honest, I don\'t think this is something many people need so I\'ll go ahead and close this pull request. Thanks for contributing.'
     }, {
         name: 'Gratitude',
         description: 'When someone is thankful',
@@ -71,7 +71,7 @@ const ghData:GitHubMessageTemplate = {
         example: 'Oops, sorry. this should go into the code for version 2.0'
     }, {
         name: 'Mention',
-        description: 'When someone mentions another user',
+        description: 'When someone mentions another user using the @ symbol',
         example: 'Hey @MichaelSmith could you fix this?'
     }, {
         name: 'Code',
@@ -97,19 +97,33 @@ const ghData:GitHubMessageTemplate = {
         name: 'Request',
         description: 'When someone requests/asks someone to do something',
         example: 'Could you add some functionality so that when the user clicks the button, the message disappears?'
+    }, {
+        name: 'URL',
+        description: 'When main context of the comment is a URL',
+        example: 'Refer https:\/\/google.com for more information'
     }])
 };
 const GHDiscussionTemplate:string = 'GithubDiscussionTemplate';
 
 (async () => {
     const mturk = new MechanicalTurk();
-    await mturk.processTemplateFile(GHDiscussionTemplate, 'GithubDiscussion.xml.dot');
-    await mturk.createHITFromTemplate(GHDiscussionTemplate, ghData, {
-        Title: 'Test HIT over 5000',
-        Description: 'Testing the HIT API',
-        LifetimeInSeconds: 600,
-        AssignmentDurationInSeconds: 600,
-        Reward: '0.01',
-        MaxAssignments: 4
+    // await mturk.processTemplateFile(GHDiscussionTemplate, 'GithubDiscussion.xml.dot');
+    // await mturk.createHITFromTemplate(GHDiscussionTemplate, ghData, {
+    //     Title: 'GitHub Pull Requests',
+    //     Description: 'You will be asked to read short messages and describe them.',
+    //     LifetimeInSeconds: 600,
+    //     AssignmentDurationInSeconds: 600,
+    //     Reward: '0.01',
+    //     MaxAssignments: 4
+    // });
+    const hits = await mturk.listHITs({MaxResults: 10});
+    hits.forEach(async (h) => {
+        const assignments = await h.listAssignments();
+        assignments.forEach((a, i) => {
+            a.getAnswers().forEach((v, k) => {
+                console.log('Question', k);
+                console.log('Answer', v);
+            });
+        });
     });
 })();
