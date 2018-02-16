@@ -131,6 +131,7 @@ const TIME_PER_COMMENT_IN_SECONDS:number = 300;
   for (var idx=0; idx!= hits.length; idx++){
   var len = hits[idx].comments.messages.length;
   var lifetime = len * TIME_PER_COMMENT_IN_SECONDS;
+  lifetime = 120;
   var reward = String(len * RATE);
   try{
     await mturk.createHITFromTemplate(GHDiscussionTemplate, hits[idx], {
@@ -144,6 +145,7 @@ const TIME_PER_COMMENT_IN_SECONDS:number = 300;
   }
   catch (error){
     console.log("Caught an exception");
+    console.log(error.message);
     if (error.message == 'Rate exceeded'){
       idx = idx-1;
       await sleep(2000);
