@@ -27,7 +27,7 @@ for (let i_id in data) {
   for (let comment in data[i_id]['issue_comments']) {
     messages_list.push({
       comment_ID: data[i_id]['issue_comments'][comment]['comment_id'],
-      body: data[i_id]['issue_comments'][comment]['body']
+      body: _.escape(data[i_id]['issue_comments'][comment]['body'])
     });
   };
   var ghData:GitHubMessageTemplate = {
@@ -117,16 +117,24 @@ for (let i_id in data) {
   hits.push(hit);
 };
 
+// for (var i = 0; i != hits[0].comments.messages.length; ++i){
+//   console.log("body ======= " + i);
+//   console.log(hits[1].comments.messages[i].body);
+// }
+
 const GHDiscussionTemplate:string = 'GithubDiscussionTemplate';
+const RATE:number = 0.02;
+const TIME_PER_COMMENT_IN_SECONDS:number = 300;
 
 (async () => {
-  for (let hit in hits) {
-    const mturk = new MechanicalTurk();
-    await mturk.processTemplateFile(GHDiscussionTemplate, 'GithubDiscussion.xml.dot');
-    var lifetime = hits[hit].comments.messages.length * 300;
+  const mturk = new MechanicalTurk();
+  await mturk.processTemplateFile(GHDiscussionTemplate, 'GithubDiscussion.xml.dot');
+  for (let idx in hits) {
+    var len = hits[idx].comments.messages.length;
+    var lifetime = len * TIME_PER_COMMENT_IN_SECONDS;
     lifetime = 300;
-    var reward = String(hits[hit].comments.messages.length * 0.02);
-    await mturk.createHITFromTemplate(GHDiscussionTemplate, hits[hit], {
+    var reward = String(len * RATE);
+    await mturk.createHITFromTemplate(GHDiscussionTemplate, hits[idx], {
         Title: 'GitHub Pull Requests',
         Description: 'You will be asked to read short messages and categorize them.',
         LifetimeInSeconds: lifetime,
@@ -134,17 +142,16 @@ const GHDiscussionTemplate:string = 'GithubDiscussionTemplate';
         Reward: reward,
         MaxAssignments: 4
     });
-
-
-    // const hits = await mturk.listHITs({MaxResults: 10});
-    // hits.forEach(async (h) => {
-    //     const assignments = await h.listAssignments();
-    //     assignments.forEach((a, i) => {
-    //         a.getAnswers().forEach((v, k) => {
-    //             console.log('Question', k);
-    //             console.log('Answer', v);
-    //         });
-    //     });
-    // });
   }
+
+      // const hits = await mturk.listHITs({MaxResults: 10});
+      // hits.forEach(async (h) => {
+      //     const assignments = await h.listAssignments();
+      //     assignments.forEach((a, i) => {
+      //         a.getAnswers().forEach((v, k) => {
+      //             console.log('Question', k);
+      //             console.log('Answer', v);
+      //         });
+      //     });
+      // });
 })();
