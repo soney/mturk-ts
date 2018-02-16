@@ -120,16 +120,20 @@ for (let i_id in data) {
 const GHDiscussionTemplate:string = 'GithubDiscussionTemplate';
 
 (async () => {
-    // const mturk = new MechanicalTurk();
-    // await mturk.processTemplateFile(GHDiscussionTemplate, 'GithubDiscussion.xml.dot');
-    // await mturk.createHITFromTemplate(GHDiscussionTemplate, ghData, {
-    //     Title: 'GitHub Pull Requests',
-    //     Description: 'You will be asked to read short messages and categorize them.',
-    //     LifetimeInSeconds: 600,
-    //     AssignmentDurationInSeconds: 600,
-    //     Reward: '0.02',
-    //     MaxAssignments: 4
-    // });
+  for (let hit in hits) {
+    const mturk = new MechanicalTurk();
+    await mturk.processTemplateFile(GHDiscussionTemplate, 'GithubDiscussion.xml.dot');
+    var lifetime = hits[hit].comments.messages.length * 300;
+    lifetime = 300;
+    var reward = String(hits[hit].comments.messages.length * 0.02);
+    await mturk.createHITFromTemplate(GHDiscussionTemplate, hits[hit], {
+        Title: 'GitHub Pull Requests',
+        Description: 'You will be asked to read short messages and categorize them.',
+        LifetimeInSeconds: lifetime,
+        AssignmentDurationInSeconds: lifetime,
+        Reward: reward,
+        MaxAssignments: 4
+    });
 
 
     // const hits = await mturk.listHITs({MaxResults: 10});
@@ -142,4 +146,5 @@ const GHDiscussionTemplate:string = 'GithubDiscussionTemplate';
     //         });
     //     });
     // });
+  }
 })();
