@@ -20,7 +20,7 @@
               <QuestionContent>
               <Text>
                   {{=message.body}}
-              </Text>  
+              </Text>
               </QuestionContent>
               <AnswerSpecification>
                   <SelectionAnswer>

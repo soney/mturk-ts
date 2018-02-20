@@ -92,22 +92,24 @@ export class MechanicalTurkAssignment {
     public async reject(RequesterFeedback:string):Promise<void> {
         await this.mturk.approveAssignment({ AssignmentId: this.getID(), RequesterFeedback });
     };
-    public getAnswers():Map<string, string> {
+    public getAnswers():Map<string, Array<string>> {
         const data = parse(this.getAnswerString());
         const {root} = data;
-        const result:Map<string, string> = new Map<string, string>();
+        const result:Map<string, Array<string>> = new Map<string, Array<string>>();
         root.children.forEach((child) => {
             const {name} = child;
             if(name === 'Answer') {
                 const {children} = child;
                 let identifier:string;
-                let value:string;
+                let value:Array<string> = [];
                 children.forEach((c) => {
                     const {name, content} = c;
                     if(name === 'QuestionIdentifier') {
-                        identifier = content;
+                        if (content.indexOf('_')>-1){
+                          identifier = content;
+                        }
                     } else {
-                        value = content;
+                        value.push(content);
                     }
                 });
                 if(identifier && value) {
