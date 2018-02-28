@@ -2,10 +2,13 @@ import {MechanicalTurk} from './mturk';
 import {join} from 'path';
 import _ = require('underscore');
 import {listFiles} from 'list-files-in-dir';
+import * as fs from 'fs';
 
-function sleep(ms:number) {
+async function sleep(ms:number):Promise<any> {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
+
+
 
 interface GitHubMessageTemplate {
   messages: Array<{
@@ -30,13 +33,21 @@ const TIME_PER_COMMENT_IN_SECONDS:number = 300;
 const mturk = new MechanicalTurk();
 
 const PATH = '/Users/vanditagarwal/Downloads/SI_Soney/gh_mining/memoized_db';
-
-listFiles(PATH)
-.then(files => {
-  for (let file in files) {
-    var data = require(files[file]);
-    let hits = []
-    for (let i_id in data) {
+function post_hit() {
+  listFiles(PATH)
+  .then(files => {
+    for (let file in files) {
+      var data = require(files[file]);
+      data = require('../data.json');
+      let hits = [];
+      let count = 0;
+      for (let i_id in data) {
+        // -----------------
+        if(count === 3){
+        break;
+      };
+      count++;
+      // -----------------
       var messages_list:GitHubMessageTemplate["messages"] = [];
       for (let comment in data[i_id]['issue_comments']) {
         messages_list.push({
@@ -130,45 +141,99 @@ listFiles(PATH)
       };
       hits.push(hit);
     };
-
     (async () => {
-      // await mturk.processTemplateFile(GHDiscussionTemplate, 'GithubDiscussion.xml.dot');
-      // for (var idx=0; idx!= hits.length; idx++){
-      //   var len = hits[idx].comments.messages.length;
-      //   var duration = len * TIME_PER_COMMENT_IN_SECONDS;
-      //   var lifetime = 600;
-      //   var reward = String(len * RATE);
-      //   try{
-      //     await mturk.createHITFromTemplate(GHDiscussionTemplate, hits[idx], {
-      //       Title: 'GitHub Pull Requests',
-      //       Description: 'You will be asked to read short messages and categorize them.',
-      //       LifetimeInSeconds: lifetime,
-      //       AssignmentDurationInSeconds: duration,
-      //       Reward: reward,
-      //       MaxAssignments: 2
-      //     });
-      //   }
-      //   catch (error){
-      //     console.log("Caught an exception");
-      //     console.log(error.message);
-      //     if (error.message == 'Rate exceeded'){
-      //       idx = idx-1;
-      //       await sleep(2000);
-      //     };
-      //   }
-      // }
-
-      const hits_result = await mturk.listHITs({MaxResults: 10});
-      hits_result.forEach(async (h) => {
-          const assignments = await h.listAssignments();
-          assignments.forEach((a, i) => {
-              a.getAnswers().forEach((v, k) => {
-                  console.log('Question: ', k);
-                  console.log('Answer: ', v, "\n");
-              });
+      await mturk.processTemplateFile(GHDiscussionTemplate, 'GithubDiscussion.xml.dot');
+      for (let idx=0; idx!= hits.length; idx++){
+        const len = hits[idx].comments.messages.length;
+        const duration = len * TIME_PER_COMMENT_IN_SECONDS;
+        const lifetime = 600;
+        const reward = String(len * RATE);
+        try{
+          await mturk.createHITFromTemplate(GHDiscussionTemplate, hits[idx], {
+            Title: 'GitHub Pull Requests',
+            Description: 'You will be asked to read short messages and categorize them.',
+            LifetimeInSeconds: lifetime,
+            AssignmentDurationInSeconds: duration,
+            Reward: reward,
+            MaxAssignments: 2
           });
-      });
+        }
+        catch (error){
+          console.log("Caught an exception");
+          console.log(error.message);
+          if (error.message == 'Rate exceeded'){
+            idx = idx-1;
+            await sleep(2000);
+          };
+        }
+      }
     })();
     break;
   };
+});
+}
+
+function mapToJSON(map:Map<string, any>) {
+  const result:any = {};
+  map.forEach((value:any, key:string) => {
+    result[key] = value;
+  });
+  return JSON.stringify(result);
+}
+
+function jsonToMap(jsonStr:string):Map<string, any> {
+  const obj:any = JSON.parse(jsonStr);
+  const rv:Map<string, any> = new Map<string, any>();
+  for(let k of Object.keys(obj)) {
+    rv.set(k, obj[k]);
+  }
+  return rv;
+}
+
+async function writeFile(filename:string, contents:string):Promise<void> {
+  return new Promise<void>((resolve, reject) => {
+    fs.writeFile(filename, contents, () => {
+      resolve();
+    })
+  });
+};
+
+let results:Map<string,Array<Array<string>>> = new Map<string,Array<Array<string>>>();
+
+
+function retrieve_results() {
+  (async () => {
+    const hits_result = await mturk.listHITs();
+    const writePromises:Array<Promise<void>> = hits_result.map(async (h) => {
+      const assignments = await h.listAssignments();
+      await assignments.forEach((a, i) => {
+        a.getAnswers().forEach((v, k) => {
+          if(!results.has(k)) {
+            results.set(k,new Array<Array<string>>());
+          }
+          results.get(k).push(v);
+        });
+      });
+    });
+    await Promise.all(writePromises);
+    writeFile("result.json", mapToJSON(results));
+    console.log('all done writing');
+  })();
+}
+
+var readline = require('readline');
+
+var rl = readline.createInterface({
+  input: process.stdin,
+  output: process.stdout
+});
+
+rl.question("1: Post HIT\n2: Retrieve Results\n", function(answer:any) {
+  if (answer === '1') {
+    post_hit();
+  }
+  else {
+    retrieve_results();
+  }
+  rl.close();
 });
