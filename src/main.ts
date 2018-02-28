@@ -34,19 +34,25 @@ const mturk = new MechanicalTurk();
 
 const PATH = '/Users/vanditagarwal/Downloads/SI_Soney/gh_mining/memoized_db';
 function post_hit() {
+  let completed = require('../completed.json');
   listFiles(PATH)
   .then(files => {
     for (let file in files) {
       var data = require(files[file]);
-      data = require('../data.json');
+      // ----------------- TODO
+      // data = require('../data.json');
+      // -----------------
       let hits = [];
       let count = 0;
       for (let i_id in data) {
-        // -----------------
-        if(count === 3){
-        break;
-      };
-      count++;
+        // ----------------- TODO
+    //     if(count === 3){
+    //     break;
+    //   };
+    //   count++;
+      if (i_id in completed) {
+      continue;
+    }
       // -----------------
       var messages_list:GitHubMessageTemplate["messages"] = [];
       for (let comment in data[i_id]['issue_comments']) {
@@ -146,7 +152,7 @@ function post_hit() {
       for (let idx=0; idx!= hits.length; idx++){
         const len = hits[idx].comments.messages.length;
         const duration = len * TIME_PER_COMMENT_IN_SECONDS;
-        const lifetime = 600;
+        const lifetime = 180;
         const reward = String(len * RATE);
         try{
           await mturk.createHITFromTemplate(GHDiscussionTemplate, hits[idx], {
@@ -221,19 +227,13 @@ function retrieve_results() {
   })();
 }
 
-var readline = require('readline');
-
-var rl = readline.createInterface({
-  input: process.stdin,
-  output: process.stdout
-});
-
-rl.question("1: Post HIT\n2: Retrieve Results\n", function(answer:any) {
-  if (answer === '1') {
-    post_hit();
+for (let j = 0; j != process.argv.length; ++j){
+  if (j === 2) {
+    if (process.argv[j] === '1') {
+      post_hit();
+    }
+    else {
+      retrieve_results();
+    }
   }
-  else {
-    retrieve_results();
-  }
-  rl.close();
-});
+}
