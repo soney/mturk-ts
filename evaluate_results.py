@@ -13,18 +13,20 @@ for key in data:
 
 for issue_id in results:
     issue_agree = {}
+    num_responders = 0
     for comment_id in results[issue_id]:
         comment_agree = {}
+        num_responders = len(results[issue_id][comment_id])
         for response in results[issue_id][comment_id]:
+            #num_responders = len(response)
             for ans in response:
                 if ans not in comment_agree:
                     comment_agree[ans] = 0
                 comment_agree[ans] += 1
-                if comment_agree[ans] > 1:
-                    issue_agree[comment_id] = comment_agree
+        if max(comment_agree.values()) > 1:
+            issue_agree[comment_id] = comment_agree
     if len(issue_agree) == len(results[issue_id]):
-        completed[issue_id] = {}
-        completed[issue_id][comment_id] = issue_agree
-        completed[issue_id]["num_responders"] = len(next(iter(results[issue_id].values())))
-with open('completed.json', 'a') as f:
+        completed[issue_id] = issue_agree
+        completed[issue_id]["num_responders"] = num_responders
+with open('completed.json', 'w') as f:
     f.write(json.dumps(completed))
