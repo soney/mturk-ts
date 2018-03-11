@@ -8,8 +8,6 @@ async function sleep(ms:number):Promise<any> {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-
-
 interface GitHubMessageTemplate {
   messages: Array<{
     comment_ID:string,
@@ -28,144 +26,190 @@ interface HIT {
 };
 
 const GHDiscussionTemplate:string = 'GithubDiscussionTemplate';
+// const PATH:string = '/Users/vanditagarwal/Downloads/SI_Soney/gh_mining/memoized_db';
+const PATH:string = '.';
 const RATE:number = 0.02;
 const TIME_PER_COMMENT_IN_SECONDS:number = 300;
+const MAX_NUM_PENDING_HITS:number = 4;
 const mturk = new MechanicalTurk();
 
-const PATH = '/Users/vanditagarwal/Downloads/SI_Soney/gh_mining/memoized_db';
-function post_hit() {
-  let completed = require('../completed.json');
-  listFiles(PATH)
-  .then(files => {
-    for (let file in files) {
-      var data = require(files[file]);
-      let hits = [];
-      let count = 0;
-      for (let i_id in data) {
-        if (i_id in completed) {
+function get_posted_HITs_status(){
+  const HITS_status = require('../HITS_status.json');
+  let pending_list:string[] = [];
+  let completed_list:string[] = [];
+  for (const issue_id in  HITS_status){
+    if (HITS_status[issue_id]['status'] === 'pending'){
+      pending_list.push(issue_id)
+    } else if (HITS_status[issue_id]['status'] === 'completed'){
+      completed_list.push(issue_id);
+    }
+  }
+  return {
+    pending: pending_list,
+    completed: completed_list
+  };
+}
+
+function post_hits(){
+  let posted_status = get_posted_HITs_status();
+  let pending_list = posted_status.pending;
+  let new_posts_num = MAX_NUM_PENDING_HITS - pending_list.length;
+
+  if (new_posts_num == 0){
+    console.log('The number of pending HITs is maximum: ' + MAX_NUM_PENDING_HITS);
+    return;
+  }
+
+  // need to post at least one new HIT
+  let completed_list = posted_status.completed;
+  listFiles(PATH).then(files => {
+    let new_HITs:HIT[] = [];
+    let finished:boolean = false;
+    for (let file in files){
+      // let issues = require(files[file]);
+      let issues = require('../data.json');
+      for (let issue_id in issues){
+        // issue_id which has not been posted yet
+        if (pending_list.indexOf(issue_id) == -1 && completed_list.indexOf(issue_id) == -1){
+          // decrement new_posts_num
+          new_posts_num -= 1;
+          let messages_list:GitHubMessageTemplate["messages"] = [];
+          for (let comment in issues[issue_id]['issue_comments']) {
+            messages_list.push({
+              comment_ID: issue_id + '_' + issues[issue_id]['issue_comments'][comment]['comment_id'],
+              body: _.escape(issues[issue_id]['issue_comments'][comment]['body'])
+            });
+          };
+
+          let ghData:GitHubMessageTemplate = {
+            messages: messages_list,
+            messageTypes: _.shuffle([{
+              name: 'Confirmation',
+              description: 'If someone warrants the contribution, or agreement',
+              example: 'This looks mostly good to me!'
+            }, {
+              name: 'Objection',
+              description: 'When someone says something is wrong',
+              example: 'This won\'t work, without a defined datatype'
+            }, {
+              name: 'Fixing',
+              description: 'When someone says that they are working on fixing/resolving something',
+              example: 'I\'m working on cleaning this up some more'
+            }, {
+              name: 'Suggestion',
+              description: 'When someone makes a suggestion',
+              example: 'Could you use camel case when you make future committs?'
+            }, {
+              name: 'Question',
+              description: 'When someone asks a question',
+              example: 'So should we commit this now or commit it later?'
+            }, {
+              name: 'Answer',
+              description: 'When someone answers a question',
+              example: 'Yes, the code does handle that case.'
+            }, {
+              name: 'Bug',
+              description: 'When someone talks about a bug in the code',
+              example: 'There\'s a flaw in the logic which was never noticed because it was never hit until now.'
+            }, {
+              name: 'Accept',
+              description: 'When someone says they will merge or accept the code',
+              example: 'Thanks, merged!'
+            }, {
+              name: 'Reject',
+              description: 'When someone refuses to merge a request and is willing to close it',
+              example: 'To be honest, I don\'t think this is something many people need so I\'ll go ahead and close this pull request. Thanks for contributing.'
+            }, {
+              name: 'Gratitude',
+              description: 'When someone is thankful',
+              example: 'Awesome, thanks!'
+            }, {
+              name: 'Apology',
+              description: 'When someone feels sorry or apologizes',
+              example: 'Oops, sorry. this should go into the code for version 2.0'
+            }, {
+              name: 'Mention',
+              description: 'When someone mentions another user using the @ symbol',
+              example: 'Hey @MichaelSmith could you fix this?'
+            }, {
+              name: 'Code',
+              description: 'Primarily code in the message',
+              example: `
+              function add1(int x) {
+                return x +1;
+              }
+              `
+            }, {
+              name: '+1 (Plus One)',
+              description: 'Someone agrees by saying "+1"',
+              example: '+1'
+            }, {
+              name: 'Digression',
+              description: 'Someone deviates from the main topic and talks about something unrelated',
+              example: 'Hey, check out this website...'
+            }, {
+              name: 'Non-english',
+              description: 'This message is in a different language',
+              example: 'なるほどー。プラグインを利用させてもらっている１ユーザーとして楽しみにしてます。 今回は自力でゴリゴリ変換して抜き出してみました。。。 参考になりました。ありがとうございました！'
+            }, {
+              name: 'Request',
+              description: 'When someone requests/asks someone to do something',
+              example: 'Could you add some functionality so that when the user clicks the button, the message disappears?'
+            }, {
+              name: 'URL',
+              description: 'When main context of the comment is a URL',
+              example: 'Refer https:\/\/google.com for more information'
+            }])
+          };
+
+          let hit:HIT = {
+            issue_id: issue_id,
+            comments: ghData
+          }
+          new_HITs.push(hit);
+        } else { // issue id is pending or completed
           continue;
         }
-        var messages_list:GitHubMessageTemplate["messages"] = [];
-        for (let comment in data[i_id]['issue_comments']) {
-          messages_list.push({
-            comment_ID: i_id + '_' + data[i_id]['issue_comments'][comment]['comment_id'],
-            body: _.escape(data[i_id]['issue_comments'][comment]['body'])
-          });
-        };
-        var ghData:GitHubMessageTemplate = {
-          messages: messages_list,
-          messageTypes: _.shuffle([{
-            name: 'Confirmation',
-            description: 'If someone warrants the contribution, or agreement',
-            example: 'This looks mostly good to me!'
-          }, {
-            name: 'Objection',
-            description: 'When someone says something is wrong',
-            example: 'This won\'t work, without a defined datatype'
-          }, {
-            name: 'Fixing',
-            description: 'When someone says that they are working on fixing/resolving something',
-            example: 'I\'m working on cleaning this up some more'
-          }, {
-            name: 'Suggestion',
-            description: 'When someone makes a suggestion',
-            example: 'Could you use camel case when you make future committs?'
-          }, {
-            name: 'Question',
-            description: 'When someone asks a question',
-            example: 'So should we commit this now or commit it later?'
-          }, {
-            name: 'Answer',
-            description: 'When someone answers a question',
-            example: 'Yes, the code does handle that case.'
-          }, {
-            name: 'Bug',
-            description: 'When someone talks about a bug in the code',
-            example: 'There\'s a flaw in the logic which was never noticed because it was never hit until now.'
-          }, {
-            name: 'Accept',
-            description: 'When someone says they will merge or accept the code',
-            example: 'Thanks, merged!'
-          }, {
-            name: 'Reject',
-            description: 'When someone refuses to merge a request and is willing to close it',
-            example: 'To be honest, I don\'t think this is something many people need so I\'ll go ahead and close this pull request. Thanks for contributing.'
-          }, {
-            name: 'Gratitude',
-            description: 'When someone is thankful',
-            example: 'Awesome, thanks!'
-          }, {
-            name: 'Apology',
-            description: 'When someone feels sorry or apologizes',
-            example: 'Oops, sorry. this should go into the code for version 2.0'
-          }, {
-            name: 'Mention',
-            description: 'When someone mentions another user using the @ symbol',
-            example: 'Hey @MichaelSmith could you fix this?'
-          }, {
-            name: 'Code',
-            description: 'Primarily code in the message',
-            example: `
-            function add1(int x) {
-              return x +1;
-            }
-            `
-          }, {
-            name: '+1 (Plus One)',
-            description: 'Someone agrees by saying "+1"',
-            example: '+1'
-          }, {
-            name: 'Digression',
-            description: 'Someone deviates from the main topic and talks about something unrelated',
-            example: 'Hey, check out this website...'
-          }, {
-            name: 'Non-english',
-            description: 'This message is in a different language',
-            example: 'なるほどー。プラグインを利用させてもらっている１ユーザーとして楽しみにしてます。 今回は自力でゴリゴリ変換して抜き出してみました。。。 参考になりました。ありがとうございました！'
-          }, {
-            name: 'Request',
-            description: 'When someone requests/asks someone to do something',
-            example: 'Could you add some functionality so that when the user clicks the button, the message disappears?'
-          }, {
-            name: 'URL',
-            description: 'When main context of the comment is a URL',
-            example: 'Refer https:\/\/google.com for more information'
-          }])
-        };
-        var hit:HIT = {
-          issue_id: i_id,
-          comments: ghData
-        };
-        hits.push(hit);
-      };
-      (async () => {
-        await mturk.processTemplateFile(GHDiscussionTemplate, 'GithubDiscussion.xml.dot');
-        for (let idx=0; idx!= hits.length; idx++){
-          const len = hits[idx].comments.messages.length;
-          const duration = len * TIME_PER_COMMENT_IN_SECONDS;
-          const lifetime = 180;
-          const reward = String(len * RATE);
-          try{
-            await mturk.createHITFromTemplate(GHDiscussionTemplate, hits[idx], {
-              Title: 'GitHub Pull Requests',
-              Description: 'You will be asked to read short messages and categorize them.',
-              LifetimeInSeconds: lifetime,
-              AssignmentDurationInSeconds: duration,
-              Reward: reward,
-              MaxAssignments: 2
-            });
-          }
-          catch (error){
-            console.log("Caught an exception");
-            console.log(error.message);
-            if (error.message == 'Rate exceeded'){
-              idx = idx-1;
-              await sleep(2000);
-            };
-          }
+
+        if (new_posts_num == 0){
+          console.log('new_posts_num is 0, finished = true');
+          finished = true;
+          break;
         }
-      })();
-    };
+      }
+      if (finished){
+        console.log('finish finding new issues');
+        break;
+      }
+    }
+    (async () => {
+      console.log(new_HITs);
+      await mturk.processTemplateFile(GHDiscussionTemplate, 'GithubDiscussion.xml.dot');
+      for (let idx = 0; idx != new_HITs.length; idx++){
+        const len = new_HITs[idx].comments.messages.length;
+        const duration = len * TIME_PER_COMMENT_IN_SECONDS;
+        const lifetime = 300;
+        const reward = String(len * RATE);
+        try{
+          await mturk.createHITFromTemplate(GHDiscussionTemplate, new_HITs[idx], {
+            Title: 'GitHub Pull Requests',
+            Description: 'You will be asked to read short messages and categorize them.',
+            LifetimeInSeconds: lifetime,
+            AssignmentDurationInSeconds: duration,
+            Reward: reward,
+            MaxAssignments: 4
+          });
+        }
+        catch (error){
+          console.log("Caught an exception");
+          console.log(error.message);
+          if (error.message == 'Rate exceeded'){
+            idx = idx-1;
+            await sleep(2000);
+          };
+        }
+      }
+    })();
   });
 }
 
@@ -194,18 +238,20 @@ async function writeFile(filename:string, contents:string):Promise<void> {
   });
 };
 
-let results:Map<string,Array<Array<string>>> = new Map<string,Array<Array<string>>>();
-
-
 function retrieve_results() {
+  let results:Map<string,Array<Array<string>>> = new Map<string,Array<Array<string>>>();
   (async () => {
     const hits_result = await mturk.listHITs();
     const writePromises:Array<Promise<void>> = hits_result.map(async (h) => {
+
       const assignments = await h.listAssignments();
       await assignments.forEach((a, i) => {
+        console.log('================================== a ========================================');
+        console.log(a);
+        console.log(a.getStatus());
         a.getAnswers().forEach((v, k) => {
           if(!results.has(k)) {
-            results.set(k,new Array<Array<string>>());
+            results.set(k, new Array<Array<string>>());
           }
           results.get(k).push(v);
         });
@@ -220,7 +266,7 @@ function retrieve_results() {
 for (let j = 0; j != process.argv.length; ++j){
   if (j === 2) {
     if (process.argv[j] === '1') {
-      post_hit();
+      post_hits();
     }
     else {
       retrieve_results();

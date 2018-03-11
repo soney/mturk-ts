@@ -25,8 +25,6 @@ for issue_id in results:
         if max(comment_agree.values()) > 1:
             issue_agree[comment_id] = comment_agree
     HITS_status[issue_id] = {}
-    print('len issue_agree {}'.format(len(issue_agree)))
-    print('len results[issue_id] {}'.format(len(results[issue_id])))
     if len(issue_agree) == len(results[issue_id]):
         HITS_status[issue_id]['status'] = 'completed'
         HITS_status[issue_id]['agree_comments'] = issue_agree
