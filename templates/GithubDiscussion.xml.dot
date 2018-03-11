@@ -24,7 +24,7 @@
               </QuestionContent>
               <AnswerSpecification>
                   <SelectionAnswer>
-                      <StyleSuggestion>checkbox</StyleSuggestion>
+                      <StyleSuggestion>radiobutton</StyleSuggestion>
                       <Selections>
                           {{~it.comments.messageTypes :messageType}}
                               <Selection>
