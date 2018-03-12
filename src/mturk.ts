@@ -56,6 +56,8 @@ export class MechanicalTurkHIT {
     };
     public getID():string { return this.info.HITId; };
     public getTitle():string { return this.info.Title; };
+    public getHITStatus():string { return this.info.HITStatus; };
+    public getQuestionString():string { return this.info.Question };
 
     public async delete():Promise<void> {
         return this.mturk.deleteHIT({HITId: this.getID()});

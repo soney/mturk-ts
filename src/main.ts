@@ -3,6 +3,7 @@ import {join} from 'path';
 import _ = require('underscore');
 import {listFiles} from 'list-files-in-dir';
 import * as fs from 'fs';
+import parse = require('xml-parser');
 
 async function sleep(ms:number):Promise<any> {
   return new Promise(resolve => setTimeout(resolve, ms));
@@ -33,26 +34,10 @@ const TIME_PER_COMMENT_IN_SECONDS:number = 300;
 const MAX_NUM_PENDING_HITS:number = 4;
 const mturk = new MechanicalTurk();
 
-function get_posted_HITs_status(){
-  const HITS_status = require('../HITS_status.json');
-  let pending_list:string[] = [];
-  let completed_list:string[] = [];
-  for (const issue_id in  HITS_status){
-    if (HITS_status[issue_id]['status'] === 'pending'){
-      pending_list.push(issue_id)
-    } else if (HITS_status[issue_id]['status'] === 'completed'){
-      completed_list.push(issue_id);
-    }
-  }
-  return {
-    pending: pending_list,
-    completed: completed_list
-  };
-}
-
 function post_hits(){
-  let posted_status = get_posted_HITs_status();
-  let pending_list = posted_status.pending;
+  let posted_status = require('../no_posting.json');
+  let pending_list = posted_status['pending'];
+  let completed = posted_status['completed']
   let new_posts_num = MAX_NUM_PENDING_HITS - pending_list.length;
 
   if (new_posts_num == 0){
@@ -172,13 +157,11 @@ function post_hits(){
         }
 
         if (new_posts_num == 0){
-          console.log('new_posts_num is 0, finished = true');
           finished = true;
           break;
         }
       }
       if (finished){
-        console.log('finish finding new issues');
         break;
       }
     }
@@ -204,7 +187,7 @@ function post_hits(){
           console.log("Caught an exception");
           console.log(error.message);
           if (error.message == 'Rate exceeded'){
-            idx = idx-1;
+            idx = idx - 1;
             await sleep(2000);
           };
         }
@@ -238,27 +221,49 @@ async function writeFile(filename:string, contents:string):Promise<void> {
   });
 };
 
+function getQuestionIds(questionString:string):string[]{
+  let questionIds:string[] = [];
+  let pos:number = 0;
+  while ((pos = questionString.indexOf('<QuestionIdentifier>', pos)) != -1){
+    let startIdx = pos + '<QuestionIdentifier>'.length;
+    let endIdx = questionString.indexOf('</QuestionIdentifier>', pos);
+    questionIds.push(questionString.substring(startIdx, endIdx));
+    pos += 1;
+  }
+  return questionIds;
+}
+
 function retrieve_results() {
-  let results:Map<string,Array<Array<string>>> = new Map<string,Array<Array<string>>>();
+  let HITs_status:Map<string, {pending:boolean, responses:Array<Array<string>>}> = new Map<string, {pending:boolean, responses:Array<Array<string>>}>();
   (async () => {
     const hits_result = await mturk.listHITs();
     const writePromises:Array<Promise<void>> = hits_result.map(async (h) => {
-
+      const question_string = h.getQuestionString();
+      const question_ids:string[] = getQuestionIds(question_string);
+      question_ids.forEach((id) => {
+        // get pending status
+        if (!HITs_status.has(id)){
+          if (h.getHITStatus() === 'Assignable'){
+            HITs_status.set(id, {pending: true, responses: new Array<Array<string>>()});
+          } else {
+            HITs_status.set(id, {pending: false, responses: new Array<Array<string>>()});
+          }
+        } else {
+          if (h.getHITStatus() === 'Assignable'){
+            HITs_status.get(id).pending = true;
+          }
+        }
+      });
+      // if there are assignments, add to respones
       const assignments = await h.listAssignments();
       await assignments.forEach((a, i) => {
-        console.log('================================== a ========================================');
-        console.log(a);
-        console.log(a.getStatus());
         a.getAnswers().forEach((v, k) => {
-          if(!results.has(k)) {
-            results.set(k, new Array<Array<string>>());
-          }
-          results.get(k).push(v);
+          HITs_status.get(k).responses.push(v);
         });
       });
     });
     await Promise.all(writePromises);
-    writeFile("result.json", mapToJSON(results));
+    writeFile("result.json", mapToJSON(HITs_status));
     console.log('all done writing');
   })();
 }
