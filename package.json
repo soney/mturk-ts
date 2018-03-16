@@ -19,7 +19,6 @@
         "@types/xml-parser": "^1.2.29",
         "aws-sdk": "^2.192.0",
         "dot": "^1.1.2",
-        "list-files-in-dir": "^0.1.4",
         "underscore": "^1.8.3",
         "xml-parser": "^1.2.1"
     },
