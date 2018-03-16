@@ -269,20 +269,24 @@ function retrieve_results() {
       // if there are assignments, add to respones
       const assignments = await h.listAssignments();
       await assignments.forEach((a, i) => {
+        let submitTime:Date = a.getSubmitTime();
         a.getAnswers().forEach((v, k) => {
+          let worker_id:string = a.getWorker().getID();
+          let respones:Map<string, {"response":Array<string>, "submitTime": Date}> = HITs_status.get(k).responses;
+          if (respones.has(worker_id)){
+            let recored_submit_time:Date = respones.get(worker_id).submitTime;
+            if (submitTime < recored_submit_time){
+              respones.get(worker_id).response = v;
+              respones.get(worker_id).submitTime = submitTime;
+            }
+          } else {
+            respones.set(worker_id, {"response": v, "submitTime": submitTime});
+          }
           HITs_status.get(k).responses.set(a.getWorker().getID(), {response: v, "submitTime": a.getSubmitTime()});
         });
       });
     });
     await Promise.all(writePromises);
-    // console.log(HITs_status.forEachresponses.forEach((key,val) => {console.log(key.submitTime)}));
-    // console.log(HITs_status.forEach((value, key) => {
-    //   console.log(key);
-    //   value.responses.forEach((data, workerId) => {
-    //     console.log('\t' + workerId);
-    //     console.log('\t' + data.submitTime);
-    //   });
-    // }))
     writeFile("result.json", getResult(HITs_status));
     console.log('all done writing');
   })();
