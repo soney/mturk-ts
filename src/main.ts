@@ -199,20 +199,19 @@ function post_hits(){
 function mapToJSON(map:Map<string, any>) {
   const result:any = {};
   map.forEach((value:any, key:string) => {
-    if(typeof value === "string" || typeof value === "boolean") {
-      console.log("\tIF");
-      console.log(value);
-      result[key] = value;
-    }
-    else {
-      console.log("\tELSE");
-      console.log(value);
-      result[key] = mapToJSON(value);
+    result[key] = value;
+  });
+  return result;
+}
+
+function getResult(map:Map<string, {"pending":boolean, "responses":Map<string, {"response":Array<string>, "submitTime": Date}>}>){
+  const result:any = {};
+  map.forEach((value, key) => {
+    result[key] = {
+      pending: value.pending,
+      responses: mapToJSON(value.responses)
     }
   });
-  // console.log("+++++++++++++++++++++++++")
-  // console.log(JSON.stringify(result));
-  // console.log("+++++++++++++++++++++++++")
   return JSON.stringify(result);
 }
 
@@ -284,7 +283,7 @@ function retrieve_results() {
     //     console.log('\t' + data.submitTime);
     //   });
     // }))
-    writeFile("result.json", mapToJSON(HITs_status));
+    writeFile("result.json", getResult(HITs_status));
     console.log('all done writing');
   })();
 }
