@@ -86,6 +86,7 @@ export class MechanicalTurkAssignment {
     public getWorker():MechanicalTurkWorker {
         return this.mturk.createMechanicalTurkWorker(this.info.WorkerId);
     };
+    public getSubmitTime():Date {return this.info.SubmitTime;}
     public getStatus():string { return this.info.AssignmentStatus; };
     public getAnswerString():string { return this.info.Answer; };
     public async approve(OverrideRejection:boolean = false, RequesterFeedback:string = ''):Promise<void> {

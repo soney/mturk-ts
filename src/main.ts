@@ -199,8 +199,20 @@ function post_hits(){
 function mapToJSON(map:Map<string, any>) {
   const result:any = {};
   map.forEach((value:any, key:string) => {
-    result[key] = value;
+    if(typeof value === "string" || typeof value === "boolean") {
+      console.log("\tIF");
+      console.log(value);
+      result[key] = value;
+    }
+    else {
+      console.log("\tELSE");
+      console.log(value);
+      result[key] = mapToJSON(value);
+    }
   });
+  // console.log("+++++++++++++++++++++++++")
+  // console.log(JSON.stringify(result));
+  // console.log("+++++++++++++++++++++++++")
   return JSON.stringify(result);
 }
 
@@ -234,7 +246,8 @@ function getQuestionIds(questionString:string):string[]{
 }
 
 function retrieve_results() {
-  let HITs_status:Map<string, {pending:boolean, responses:Array<Array<string>>}> = new Map<string, {pending:boolean, responses:Array<Array<string>>}>();
+  let HITs_status:Map<string, {"pending":boolean, "responses":Map<string, {"response":Array<string>, "submitTime": Date}>}> = new Map<string, {"pending":boolean, "responses":Map<string, {"response":Array<string>, "submitTime": Date}>}>();
+  // let HITs_status:Map<string, {pending:boolean, responses:Array<Array<string>>}> = new Map<string, {pending:boolean, responses:Array<Array<string>>}>();
   (async () => {
     const hits_result = await mturk.listHITs();
     const writePromises:Array<Promise<void>> = hits_result.map(async (h) => {
@@ -244,9 +257,9 @@ function retrieve_results() {
         // get pending status
         if (!HITs_status.has(id)){
           if (h.getHITStatus() === 'Assignable'){
-            HITs_status.set(id, {pending: true, responses: new Array<Array<string>>()});
+            HITs_status.set(id, {pending: true, responses: new Map<string, {"response":Array<string>, "submitTime": Date}>()});
           } else {
-            HITs_status.set(id, {pending: false, responses: new Array<Array<string>>()});
+            HITs_status.set(id, {pending: false, responses: new Map<string, {"response":Array<string>, "submitTime": Date}>()});
           }
         } else {
           if (h.getHITStatus() === 'Assignable'){
@@ -258,11 +271,19 @@ function retrieve_results() {
       const assignments = await h.listAssignments();
       await assignments.forEach((a, i) => {
         a.getAnswers().forEach((v, k) => {
-          HITs_status.get(k).responses.push(v);
+          HITs_status.get(k).responses.set(a.getWorker().getID(), {response: v, "submitTime": a.getSubmitTime()});
         });
       });
     });
     await Promise.all(writePromises);
+    // console.log(HITs_status.forEachresponses.forEach((key,val) => {console.log(key.submitTime)}));
+    // console.log(HITs_status.forEach((value, key) => {
+    //   console.log(key);
+    //   value.responses.forEach((data, workerId) => {
+    //     console.log('\t' + workerId);
+    //     console.log('\t' + data.submitTime);
+    //   });
+    // }))
     writeFile("result.json", mapToJSON(HITs_status));
     console.log('all done writing');
   })();
