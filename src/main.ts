@@ -245,8 +245,9 @@ function getQuestionIds(questionString:string):string[]{
 }
 
 function retrieve_results() {
-  let HITs_status:Map<string, {"pending":boolean, "responses":Map<string, {"response":Array<string>, "submitTime": Date}>}> = new Map<string, {"pending":boolean, "responses":Map<string, {"response":Array<string>, "submitTime": Date}>}>();
+  let HITs_status:Map<string, {"pending":boolean, "responses":Map<string, {"assignment_id":string, "response":Array<string>, "submitTime": Date}>}> = new Map<string, {"pending":boolean, "responses":Map<string, {"assignment_id":string, "response":Array<string>, "submitTime": Date}>}>();
   // let HITs_status:Map<string, {pending:boolean, responses:Array<Array<string>>}> = new Map<string, {pending:boolean, responses:Array<Array<string>>}>();
+  let duplicated_assignment_ids:Array<string> = new Array<string>();
   (async () => {
     const hits_result = await mturk.listHITs();
     const writePromises:Array<Promise<void>> = hits_result.map(async (h) => {
@@ -256,9 +257,9 @@ function retrieve_results() {
         // get pending status
         if (!HITs_status.has(id)){
           if (h.getHITStatus() === 'Assignable'){
-            HITs_status.set(id, {pending: true, responses: new Map<string, {"response":Array<string>, "submitTime": Date}>()});
+            HITs_status.set(id, {pending: true, responses: new Map<string, {"assignment_id":string, "response":Array<string>, "submitTime": Date}>()});
           } else {
-            HITs_status.set(id, {pending: false, responses: new Map<string, {"response":Array<string>, "submitTime": Date}>()});
+            HITs_status.set(id, {pending: false, responses: new Map<string, {"assignment_id":string, "response":Array<string>, "submitTime": Date}>()});
           }
         } else {
           if (h.getHITStatus() === 'Assignable'){
@@ -271,23 +272,26 @@ function retrieve_results() {
       await assignments.forEach((a, i) => {
         let submitTime:Date = a.getSubmitTime();
         a.getAnswers().forEach((v, k) => {
-          let worker_id:string = a.getWorker().getID();
-          let respones:Map<string, {"response":Array<string>, "submitTime": Date}> = HITs_status.get(k).responses;
+          let worker_id:string = a.getWorkerId();
+          let respones:Map<string, {"assignment_id":string, "response":Array<string>, "submitTime": Date}> = HITs_status.get(k).responses;
           if (respones.has(worker_id)){
-            let recored_submit_time:Date = respones.get(worker_id).submitTime;
-            if (submitTime < recored_submit_time){
-              respones.get(worker_id).response = v;
-              respones.get(worker_id).submitTime = submitTime;
+            let response:{"assignment_id":string, "response":Array<string>, "submitTime": Date} = respones.get(worker_id);
+            // let recored_submit_time:Date = respones.get(worker_id).submitTime;
+            if (submitTime < response.submitTime){
+              response.response = v;
+              response.submitTime = submitTime;
+              duplicated_assignment_ids.push(response.assignment_id);
+              response.assignment_id = a.getID();
             }
           } else {
-            respones.set(worker_id, {"response": v, "submitTime": submitTime});
+            HITs_status.get(k).responses.set(worker_id, {"assignment_id": a.getID(), "response": v, "submitTime": a.getSubmitTime()});
           }
-          HITs_status.get(k).responses.set(a.getWorker().getID(), {response: v, "submitTime": a.getSubmitTime()});
         });
       });
     });
     await Promise.all(writePromises);
     writeFile("result.json", getResult(HITs_status));
+    writeFile("duplicated_assignment_ids.json", JSON.stringify(duplicated_assignment_ids));
     console.log('all done writing');
   })();
 }
