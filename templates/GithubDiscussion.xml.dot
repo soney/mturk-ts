@@ -18,9 +18,17 @@
               <QuestionIdentifier>{{=message.comment_ID}}</QuestionIdentifier>
               <IsRequired>true</IsRequired>
               <QuestionContent>
+              <FormattedContent><![CDATA[
+                    <p><b>MESSAGE: </b></p>
+              ]]>
+              </FormattedContent>
               <Text>
                   {{=message.body}}
               </Text>
+              <FormattedContent><![CDATA[
+                  <center><b>--------------------THIS IS THE END OF THE MESSAGE, PLEASE MAKE YOUR SELECTION--------------------</b></center>
+              ]]>
+              </FormattedContent>
               </QuestionContent>
               <AnswerSpecification>
                   <SelectionAnswer>
