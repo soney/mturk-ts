@@ -4,6 +4,12 @@
           <Text>
               You are helping to classify messages about a pull request (PR), which programmers use to contribute code to a larger project. The categories along with their respective descriptions and examples are given below.
           </Text>
+          <FormattedContent><![CDATA[
+                <p><b>Approve condition: Payment depends on correctness (as measured by previously labeled data).</b></p>
+                <p><b>If you feel you have labeled the same message(s) before, please skip this assignment.</b></p>
+                <hr></hr>
+          ]]>
+          </FormattedContent>
           {{~it.comments.messageTypes :messageType}}
             <FormattedContent><![CDATA[
                   <p><b>{{=messageType.name}}:</b> {{=messageType.description}}
