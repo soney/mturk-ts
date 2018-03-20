@@ -29,17 +29,18 @@ for issue_id in results:
     num_responders = 0
     for comment_id in results[issue_id]:
         comment_agree = {}
-        num_responders = len(results[issue_id][comment_id])
+
 
         if results[issue_id][comment_id]['pending']:
             no_posting['pending'].append(issue_id)
         if not results[issue_id][comment_id]['responses']:
             break
 
-        respones = results[issue_id][comment_id]['responses']
-        for worker_id in respones:
-            answers = respones[worker_id]['response']
-            assignment_id = respones[worker_id]['assignment_id']
+        responses = results[issue_id][comment_id]['responses']
+        num_responders = len(responses)
+        for worker_id in responses:
+            answers = responses[worker_id]['response']
+            assignment_id = responses[worker_id]['assignment_id']
             for ans in answers:
                 if ans not in comment_agree:
                     comment_agree[ans] = []
