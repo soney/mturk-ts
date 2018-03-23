@@ -40,7 +40,7 @@ function post_hits(){
   let completed = posted_status['completed']
   let new_posts_num = MAX_NUM_PENDING_HITS - pending_list.length;
 
-  if (new_posts_num == 0){
+  if (new_posts_num <= 0){
     console.log('The number of pending HITs is maximum: ' + MAX_NUM_PENDING_HITS);
     return;
   }
@@ -171,7 +171,7 @@ function post_hits(){
       for (let idx = 0; idx != new_HITs.length; idx++){
         const len = new_HITs[idx].comments.messages.length;
         const duration = len * TIME_PER_COMMENT_IN_SECONDS;
-        const lifetime = 300;
+        const lifetime = 150;
         const reward = String(len * RATE);
         try{
           await mturk.createHITFromTemplate(GHDiscussionTemplate, new_HITs[idx], {
