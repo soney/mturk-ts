@@ -1,4 +1,16 @@
 import json
+import boto3
+
+with open('mturk_creds.json') as f:
+    creds = json.loads(f.read())
+MTURK_SANDBOX = 'https://mturk-requester-sandbox.us-east-1.amazonaws.com'
+
+client = boto3.client('mturk', 
+    aws_access_key_id=creds['access'],
+    aws_secret_access_key=creds['secret'],
+    region_name='us-east-1',
+    endpoint_url = MTURK_SANDBOX
+    )
 
 APPROVE_RATE = 0.6
 AGREEMENT_COUNT = 2
@@ -11,14 +23,62 @@ no_posting = {
 }
 approve_ids = set()
 reject_ids = set()
+
 with open('result.json') as f:
     data = json.load(f)
+
+
+def create_new_qualification(issue_id):
+    response = client.create_qualification_type(
+        Name=issue_id,
+        Description='You have already answered this question',
+        QualificationTypeStatus='Active'
+    )
+    return response['QualificationType']['QualificationTypeId']
+
+def grant_workers_qualification(workers, qualification_id):
+    for worker in workers:
+        client.associate_qualification_with_worker(
+            QualificationTypeId=qualification_id,
+            WorkerId=worker
+        )
+
+def update_issue_qualification(results):
+    issue_qualification = {}
+    with open('issue_qualification.json') as f:
+        issue_qualification = json.load(f)
+    for issue_id in results:
+        qualification_id = ''
+        temp_issue = {}
+        for comment_id in results[issue_id]:
+            if len(results[issue_id][comment_id]['responses']) == 0:
+                break
+            temp_issue['workers'] = []
+            for worker_id in results[issue_id][comment_id]['responses']:
+                temp_issue['workers'].append(worker_id)
+            workers_to_assign_qualification = []
+            if issue_id in issue_qualification:
+                workers_to_assign_qualification = list(set(temp_issue['workers']) - set(issue_qualification[issue_id]['workers']))
+                qualification_id = issue_qualification[issue_id]['qualification_id']
+            else:
+                workers_to_assign_qualification = temp_issue['workers']
+                qualification_id = create_new_qualification(issue_id)
+                temp_issue['qualification_id'] = qualification_id
+                issue_qualification[issue_id] = temp_issue
+            issue_qualification[issue_id]['workers'] = temp_issue['workers']
+            grant_workers_qualification(workers_to_assign_qualification, qualification_id)
+            break
+    with open('issue_qualification.json', 'w') as f_out:
+        f_out.write(json.dumps(issue_qualification))
+
 
 for key in data:
     issue_id, comment_id = key.split('_')
     if issue_id not in results:
         results[issue_id] = {}
     results[issue_id][comment_id] = data[key]
+
+update_issue_qualification(results)
 
 for issue_id in results:
     issue_agree = {}

@@ -165,6 +165,7 @@ function post_hits(){
         break;
       }
     }
+    const issueIdToQId = require('../issue_qualification.json');
     (async () => {
       console.log(new_HITs);
       await mturk.processTemplateFile(GHDiscussionTemplate, 'GithubDiscussion.xml.dot');
@@ -173,6 +174,21 @@ function post_hits(){
         const duration = len * TIME_PER_COMMENT_IN_SECONDS;
         const lifetime = 150;
         const reward = String(len * RATE);
+        let ops = {
+            Title: 'GitHub Pull Requests',
+            Description: 'You will be asked to read short messages and categorize them.',
+            LifetimeInSeconds: lifetime,
+            AssignmentDurationInSeconds: duration,
+            Reward: reward,
+            MaxAssignments: 4
+        };
+
+        if (new_HITs[idx].issue_id in issueIdToQId){
+          ops.QualificationRequirement = {
+            QualificationTypeId: issueIdToQId[new_HITs[idx].issue_id],
+            Comaparator:"DoesNotExist"
+          };
+        }
         try{
           await mturk.createHITFromTemplate(GHDiscussionTemplate, new_HITs[idx], {
             Title: 'GitHub Pull Requests',
