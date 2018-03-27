@@ -26,6 +26,21 @@ interface HIT {
   comments: GitHubMessageTemplate
 };
 
+interface Options {
+  Title: string,
+  Description: string,
+  LifetimeInSeconds: number,
+  AssignmentDurationInSeconds: number,
+  Reward: string,
+  MaxAssignments: number,
+  QualificationRequirements?: Array<Qualification>
+}
+
+interface Qualification {
+  QualificationTypeId: string,
+  Comparator: string
+}
+
 const GHDiscussionTemplate:string = 'GithubDiscussionTemplate';
 // const PATH:string = '/Users/vanditagarwal/Downloads/SI_Soney/gh_mining/memoized_db';
 const PATH:string = '.';
@@ -174,30 +189,22 @@ function post_hits(){
         const duration = len * TIME_PER_COMMENT_IN_SECONDS;
         const lifetime = 150;
         const reward = String(len * RATE);
-        let ops = {
-            Title: 'GitHub Pull Requests',
-            Description: 'You will be asked to read short messages and categorize them.',
-            LifetimeInSeconds: lifetime,
-            AssignmentDurationInSeconds: duration,
-            Reward: reward,
-            MaxAssignments: 4
+        let ops:Options = {
+          Title: 'GitHub Pull Requests',
+          Description: 'You will be asked to read short messages and categorize them.',
+          LifetimeInSeconds: lifetime,
+          AssignmentDurationInSeconds: duration,
+          Reward: reward,
+          MaxAssignments: 4
         };
-
         if (new_HITs[idx].issue_id in issueIdToQId){
-          ops.QualificationRequirement = {
-            QualificationTypeId: issueIdToQId[new_HITs[idx].issue_id],
-            Comaparator:"DoesNotExist"
-          };
+          ops.QualificationRequirements = [{
+            QualificationTypeId: issueIdToQId[new_HITs[idx].issue_id]['qualification_id'],
+            Comparator: "DoesNotExist"
+          }];
         }
         try{
-          await mturk.createHITFromTemplate(GHDiscussionTemplate, new_HITs[idx], {
-            Title: 'GitHub Pull Requests',
-            Description: 'You will be asked to read short messages and categorize them.',
-            LifetimeInSeconds: lifetime,
-            AssignmentDurationInSeconds: duration,
-            Reward: reward,
-            MaxAssignments: 4
-          });
+          await mturk.createHITFromTemplate(GHDiscussionTemplate, new_HITs[idx], ops);
         }
         catch (error){
           console.log("Caught an exception");
