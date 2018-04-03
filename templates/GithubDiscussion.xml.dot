@@ -20,35 +20,48 @@
           {{~}}
       </Overview>
       {{~it.comments.messages :message}}
-          <Question>
-              <QuestionIdentifier>{{=message.comment_ID}}</QuestionIdentifier>
-              <IsRequired>true</IsRequired>
-              <QuestionContent>
-              <FormattedContent><![CDATA[
-                    <p><b>MESSAGE: </b></p>
-              ]]>
-              </FormattedContent>
-              <Text>
-                  {{=message.body}}
-              </Text>
-              <FormattedContent><![CDATA[
-                  <center><b>--------------------THIS IS THE END OF THE MESSAGE, PLEASE MAKE YOUR SELECTION--------------------</b></center>
-              ]]>
-              </FormattedContent>
-              </QuestionContent>
-              <AnswerSpecification>
-                  <SelectionAnswer>
-                      <StyleSuggestion>radiobutton</StyleSuggestion>
-                      <Selections>
-                          {{~it.comments.messageTypes :messageType}}
-                              <Selection>
-                                  <SelectionIdentifier>{{=messageType.name}}</SelectionIdentifier>
-                                  <Text>{{=messageType.name}} ({{=messageType.description}})</Text>
-                              </Selection>
-                          {{~}}
-                      </Selections>
-                  </SelectionAnswer>
-              </AnswerSpecification>
-          </Question>
+        <Question>
+            <QuestionIdentifier>{{=message.comment_ID}}</QuestionIdentifier>
+            <IsRequired>true</IsRequired>
+            <QuestionContent>
+            <FormattedContent><![CDATA[
+                  <p><b>MESSAGE: </b></p>
+            ]]>
+            </FormattedContent>
+            <Text>
+                {{=message.body}}
+            </Text>
+            <FormattedContent><![CDATA[
+                <center><b>--------------------THIS IS THE END OF THE MESSAGE, PLEASE MAKE YOUR SELECTION--------------------</b></center>
+            ]]>
+            </FormattedContent>
+            </QuestionContent>
+            <AnswerSpecification>
+                <SelectionAnswer>
+                    <StyleSuggestion>radiobutton</StyleSuggestion>
+                    <Selections>
+                        {{~it.comments.messageTypes :messageType}}
+                            <Selection>
+                                <SelectionIdentifier>{{=messageType.name}}</SelectionIdentifier>
+                                <Text>{{=messageType.name}} ({{=messageType.description}})</Text>
+                            </Selection>
+                        {{~}}
+                    </Selections>
+                </SelectionAnswer>
+            </AnswerSpecification>
+        </Question>
       {{~}}
+      <Question>
+          <QuestionIdentifier>{{=it.issue_id}}</QuestionIdentifier>
+          <QuestionContent>
+            <Text>
+              Please provide your feedback in the following text box
+            </Text>
+          </QuestionContent>
+          <AnswerSpecification>
+            <FreeTextAnswer>
+              <DefaultText>Please enter your feedback here</DefaultText>
+            </FreeTextAnswer>
+          </AnswerSpecification>
+      </Question>
   </QuestionForm>

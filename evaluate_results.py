@@ -5,7 +5,7 @@ with open('mturk_creds.json') as f:
     creds = json.loads(f.read())
 MTURK_SANDBOX = 'https://mturk-requester-sandbox.us-east-1.amazonaws.com'
 
-client = boto3.client('mturk', 
+client = boto3.client('mturk',
     aws_access_key_id=creds['access'],
     aws_secret_access_key=creds['secret'],
     region_name='us-east-1',
@@ -23,6 +23,7 @@ no_posting = {
 }
 approve_ids = set()
 reject_ids = set()
+issue_feedbacks = {}
 
 with open('result.json') as f:
     data = json.load(f)
@@ -73,10 +74,15 @@ def update_issue_qualification(results):
 
 
 for key in data:
-    issue_id, comment_id = key.split('_')
-    if issue_id not in results:
-        results[issue_id] = {}
-    results[issue_id][comment_id] = data[key]
+    if '_' not in key:
+        if key not in issue_feedbacks:
+            issue_feedbacks[key] = []
+        issue_feedbacks[key].append(data[key])
+    else:
+        issue_id, comment_id = key.split('_')
+        if issue_id not in results:
+            results[issue_id] = {}
+        results[issue_id][comment_id] = data[key]
 
 update_issue_qualification(results)
 
@@ -119,6 +125,9 @@ for issue_id in results:
                 approve_ids.add(assignment_id)
             else:
                 reject_ids.add(assignment_id)
+
+with open('feedbacks.json', 'w') as f:
+    f.write(json.dumps(issue_feedbacks))
 
 with open('completed.json', 'w') as f:
     f.write(json.dumps(completed))
