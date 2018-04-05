@@ -8,11 +8,10 @@ MTURK_SANDBOX = 'https://mturk-requester-sandbox.us-east-1.amazonaws.com'
 client = boto3.client('mturk',
     aws_access_key_id=creds['access'],
     aws_secret_access_key=creds['secret'],
-    region_name='us-east-1',
-    endpoint_url = MTURK_SANDBOX
+    region_name='us-east-1'
     )
 
-APPROVE_RATE = 0.6
+APPROVE_RATE = 0.1
 AGREEMENT_COUNT = 2
 
 results = {}

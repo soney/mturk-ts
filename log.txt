@@ -1,0 +1,96 @@
+
+> mturk-ts@0.0.1 start /Users/vanditagarwal/Downloads/mturk/mturk-ts
+> npm run build;node ./built/main.js "2"
+
+
+> mturk-ts@0.0.1 build /Users/vanditagarwal/Downloads/mturk/mturk-ts
+> tsc
+
+all done writing
+finished retrieving
+['32VNZTT0A74C66ME5LJJV0D0IXC4RQ', '37Z929RLG988O61HZBKWTIUOKYEST0']
+['3A7Y0R2P2OOM6KRBHRCFQKO71BOJXT', '3OCHAWUVGOKHH4XTZCCRRZOKG0MKXR']
+finished evaluating
+
+> mturk-ts@0.0.1 start /Users/vanditagarwal/Downloads/mturk/mturk-ts
+> npm run build;node ./built/main.js "1"
+
+
+> mturk-ts@0.0.1 build /Users/vanditagarwal/Downloads/mturk/mturk-ts
+> tsc
+
+The number of pending HITs is maximum: 4
+finished posting
+2
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+
+> mturk-ts@0.0.1 start /Users/vanditagarwal/Downloads/mturk/mturk-ts
+> npm run build;node ./built/main.js "2"
+
+
+> mturk-ts@0.0.1 build /Users/vanditagarwal/Downloads/mturk/mturk-ts
+> tsc
+
+all done writing
+finished retrieving
+['32VNZTT0A74C66ME5LJJV0D0IXC4RQ', '37Z929RLG988O61HZBKWTIUOKYEST0']
+['3A7Y0R2P2OOM6KRBHRCFQKO71BOJXT', '3OCHAWUVGOKHH4XTZCCRRZOKG0MKXR', '3QAPZX2QN4DE3YNS7UHGIPFFPTL20Y']
+finished evaluating
+
+> mturk-ts@0.0.1 start /Users/vanditagarwal/Downloads/mturk/mturk-ts
+> npm run build;node ./built/main.js "1"
+
+
+> mturk-ts@0.0.1 build /Users/vanditagarwal/Downloads/mturk/mturk-ts
+> tsc
+
+[ { issue_id: '857',
+    comments: { messages: [Array], messageTypes: [Array] } },
+  { issue_id: '858',
+    comments: { messages: [Array], messageTypes: [Array] } },
+  { issue_id: '861',
+    comments: { messages: [Array], messageTypes: [Array] } },
+  { issue_id: '869',
+    comments: { messages: [Array], messageTypes: [Array] } } ]
+finished posting
+3
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+
+> mturk-ts@0.0.1 start /Users/vanditagarwal/Downloads/mturk/mturk-ts
+> npm run build;node ./built/main.js "2"
+
+
+> mturk-ts@0.0.1 build /Users/vanditagarwal/Downloads/mturk/mturk-ts
+> tsc
+
+all done writing
+finished retrieving
+finished evaluating
+
+> mturk-ts@0.0.1 start /Users/vanditagarwal/Downloads/mturk/mturk-ts
+> npm run build;node ./built/main.js "1"
+
+
+> mturk-ts@0.0.1 build /Users/vanditagarwal/Downloads/mturk/mturk-ts
+> tsc
+
+[ { issue_id: '857',
+    comments: { messages: [Array], messageTypes: [Array] } },
+  { issue_id: '861',
+    comments: { messages: [Array], messageTypes: [Array] } },
+  { issue_id: '869',
+    comments: { messages: [Array], messageTypes: [Array] } },
+  { issue_id: '879',
+    comments: { messages: [Array], messageTypes: [Array] } } ]
+Caught an exception
+The value "3HHB8WTEXWYH2SOKF01MSZJZE6XCSJ" is not valid for the parameter QualificationTypeId. (1522968841563 s)
+Caught an exception
+The value "30YN3SB4AJ2431C695TW6G4U7N120D" is not valid for the parameter QualificationTypeId. (1522968841794 s)
+Caught an exception
+The value "37SK15XEYVDEFBUCH21IEJL6KKVWRN" is not valid for the parameter QualificationTypeId. (1522968842025 s)
+finished posting
+2
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
