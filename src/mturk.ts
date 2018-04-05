@@ -108,7 +108,6 @@ export class MechanicalTurkAssignment {
                 let value:Array<string> = [];
                 children.forEach((c) => {
                     const {name, content} = c;
-                    console.log(c);
                     if(name === 'QuestionIdentifier') {
                         // if (content.indexOf('_')>-1){
                         //

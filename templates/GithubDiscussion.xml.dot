@@ -60,7 +60,6 @@
           </QuestionContent>
           <AnswerSpecification>
             <FreeTextAnswer>
-              <DefaultText>Please enter your feedback here</DefaultText>
             </FreeTextAnswer>
           </AnswerSpecification>
       </Question>
