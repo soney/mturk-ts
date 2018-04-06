@@ -64,3 +64,5 @@ typings/
 .next
 
 mturk_creds.json
+
+env/

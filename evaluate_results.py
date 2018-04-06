@@ -29,12 +29,16 @@ with open('result.json') as f:
 
 
 def create_new_qualification(issue_id):
-    response = client.create_qualification_type(
-        Name=issue_id,
-        Description='You have already answered this question',
-        QualificationTypeStatus='Active'
-    )
-    return response['QualificationType']['QualificationTypeId']
+    try:
+        response = client.create_qualification_type(
+            Name=issue_id,
+            Description='You have already answered this question',
+            QualificationTypeStatus='Active'
+        )
+        return response['QualificationType']['QualificationTypeId']
+    except Exception as e:
+        print("ERROR")
+        return ''
 
 def grant_workers_qualification(workers, qualification_id):
     for worker in workers:
@@ -63,6 +67,8 @@ def update_issue_qualification(results):
             else:
                 workers_to_assign_qualification = temp_issue['workers']
                 qualification_id = create_new_qualification(issue_id)
+                if qualification_id=='':
+                    break
                 temp_issue['qualification_id'] = qualification_id
                 issue_qualification[issue_id] = temp_issue
             issue_qualification[issue_id]['workers'] = temp_issue['workers']
@@ -93,7 +99,6 @@ for issue_id in results:
             no_posting['pending'].append(issue_id)
         if not results[issue_id][comment_id]['responses']:
             break
-
         comment_agree = {}
         responses = results[issue_id][comment_id]['responses']
         for worker_id in responses:
