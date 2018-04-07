@@ -42,8 +42,7 @@ interface Qualification {
 }
 
 const GHDiscussionTemplate:string = 'GithubDiscussionTemplate';
-// const PATH:string = '/Users/vanditagarwal/Downloads/SI_Soney/gh_mining/memoized_db';
-const PATH:string = '.';
+const PATH:string = '/Users/vanditagarwal/Downloads/SI_Soney/gh_mining/memoized_db';
 const RATE:number = 0.02;
 const TIME_PER_COMMENT_IN_SECONDS:number = 300;
 const MAX_NUM_PENDING_HITS:number = 4;
@@ -66,8 +65,7 @@ function post_hits(){
     let new_HITs:HIT[] = [];
     let finished:boolean = false;
     for (let file in files){
-      // let issues = require(files[file]);
-      let issues = require('../data.json');
+      let issues = require(files[file]);
       for (let issue_id in issues){
         // issue_id which has not been posted yet
         if (pending_list.indexOf(issue_id) == -1 && completed_list.indexOf(issue_id) == -1){
@@ -187,7 +185,7 @@ function post_hits(){
       for (let idx = 0; idx != new_HITs.length; idx++){
         const len = new_HITs[idx].comments.messages.length;
         const duration = len * TIME_PER_COMMENT_IN_SECONDS;
-        const lifetime = 120;
+        const lifetime = 1800;
         const reward = String(len * RATE);
         let ops:Options = {
           Title: 'GitHub Pull Requests',
@@ -288,8 +286,6 @@ function retrieve_results() {
       "response":Array<string>
     }>
     }>();
-  // let HITs_status:Map<string, {pending:boolean, responses:Array<Array<string>>}> = new Map<string, {pending:boolean, responses:Array<Array<string>>}>();
-  // let duplicated_assignment_ids:Array<string> = new Array<string>();
   (async () => {
     const hits_result = await mturk.listHITs();
     const writePromises:Array<Promise<void>> = hits_result.map(async (h) => {
@@ -320,7 +316,6 @@ function retrieve_results() {
     });
     await Promise.all(writePromises);
     writeFile("result.json", getResult(HITs_status));
-    // writeFile("duplicated_assignment_ids.json", JSON.stringify(duplicated_assignment_ids));
     console.log('all done writing');
   })();
 }
