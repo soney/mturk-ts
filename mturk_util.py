@@ -119,10 +119,11 @@ class MturkUtil:
         )
         return response['QualificationType']['QualificationTypeId']
 
-    def grant_worker_qualification(self, worker_id, qualification_type_id):
+    def grant_worker_qualification(self, worker_id, qualification_type_id, notification=False):
         self.client.associate_qualification_with_worker(
             QualificationTypeId=qualification_type_id,
-            WorkerId=worker_id
+            WorkerId=worker_id,
+            SendNotification=notification
         )
 
     def process_retrieved_results(self):
@@ -159,7 +160,10 @@ class MturkUtil:
             record_workers.update(workers)
             self.issue_qualification[issue_id]['workers'] = list(record_workers)
             for worker_id in self.issue_qualification[issue_id]['workers']:
-                self.grant_worker_qualification(worker_id, self.issue_qualification[issue_id]['q_id'])
+                try:
+                    self.grant_worker_qualification(worker_id, self.issue_qualification[issue_id]['q_id'])
+                except Exception as e:
+                    print('Worker {} has already granted a qualification'.format(worker_id))
 
             if self.is_issue_completed(issue_id):
                 self.completed_set.add(issue_id)

@@ -316,7 +316,6 @@ function retrieve_results() {
       });
     });
     await Promise.all(writePromises);
-    console.log(HITs_status);
     writeFile("result.json", getResult(HITs_status));
     console.log('all done writing');
   })();
