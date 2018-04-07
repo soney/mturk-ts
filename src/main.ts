@@ -42,8 +42,8 @@ interface Qualification {
 }
 
 const GHDiscussionTemplate:string = 'GithubDiscussionTemplate';
-const PATH:string = '/Users/vanditagarwal/Downloads/SI_Soney/gh_mining/memoized_db';
-// const PATH:string = '.';
+// const PATH:string = '/Users/vanditagarwal/Downloads/SI_Soney/gh_mining/memoized_db';
+const PATH:string = '.';
 const RATE:number = 0.02;
 const TIME_PER_COMMENT_IN_SECONDS:number = 300;
 const MAX_NUM_PENDING_HITS:number = 4;
@@ -66,8 +66,8 @@ function post_hits(){
     let new_HITs:HIT[] = [];
     let finished:boolean = false;
     for (let file in files){
-      let issues = require(files[file]);
-      // let issues = require('../data.json');
+      // let issues = require(files[file]);
+      let issues = require('../data.json');
       for (let issue_id in issues){
         // issue_id which has not been posted yet
         if (pending_list.indexOf(issue_id) == -1 && completed_list.indexOf(issue_id) == -1){
@@ -187,7 +187,7 @@ function post_hits(){
       for (let idx = 0; idx != new_HITs.length; idx++){
         const len = new_HITs[idx].comments.messages.length;
         const duration = len * TIME_PER_COMMENT_IN_SECONDS;
-        const lifetime = 1800;
+        const lifetime = 120;
         const reward = String(len * RATE);
         let ops:Options = {
           Title: 'GitHub Pull Requests',
