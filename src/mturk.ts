@@ -109,9 +109,6 @@ export class MechanicalTurkAssignment {
                 children.forEach((c) => {
                     const {name, content} = c;
                     if(name === 'QuestionIdentifier') {
-                        // if (content.indexOf('_')>-1){
-                        //
-                        // }
                         identifier = content;
                     } else {
                         value.push(content);

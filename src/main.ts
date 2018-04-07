@@ -50,7 +50,7 @@ const MAX_NUM_PENDING_HITS:number = 4;
 const mturk = new MechanicalTurk();
 
 function post_hits(){
-  let posted_status = require('../no_posting.json');
+  let posted_status = require('../no_post.json');
   let pending_list = posted_status['pending'];
   let completed = posted_status['completed']
   let new_posts_num = MAX_NUM_PENDING_HITS - pending_list.length;
@@ -199,7 +199,7 @@ function post_hits(){
         };
         if (new_HITs[idx].issue_id in issueIdToQId){
           ops.QualificationRequirements = [{
-            QualificationTypeId: issueIdToQId[new_HITs[idx].issue_id]['qualification_id'],
+            QualificationTypeId: issueIdToQId[new_HITs[idx].issue_id]['q_id'],
             Comparator: "DoesNotExist"
           }];
         }
@@ -213,8 +213,13 @@ function post_hits(){
             idx = idx - 1;
             await sleep(2000);
           };
+
+          if (error.message.indexOf('QualificationTypeId') >= 0){
+            issueIdToQId[new_HITs[idx].issue_id]['valid'] = false;
+          }
         }
       }
+      writeFile("issue_qualification.json", JSON.stringify(issueIdToQId));
     })();
   });
 }
@@ -227,7 +232,7 @@ function mapToJSON(map:Map<string, any>) {
   return result;
 }
 
-function getResult(map:Map<string, {"pending":boolean, "responses":Map<string, {"response":Array<string>, "submitTime": Date}>}>){
+function getResult(map:Map<string, {"pending":boolean, "responses":Map<string, {"response":Array<string>}>}>){
   const result:any = {};
   map.forEach((value, key) => {
     result[key] = {
@@ -268,9 +273,23 @@ function getQuestionIds(questionString:string):string[]{
 }
 
 function retrieve_results() {
-  let HITs_status:Map<string, {"pending":boolean, "responses":Map<string, {"assignment_id":string, "response":Array<string>, "submitTime": Date}>}> = new Map<string, {"pending":boolean, "responses":Map<string, {"assignment_id":string, "response":Array<string>, "submitTime": Date}>}>();
+  let HITs_status:Map<string, {
+    "pending":boolean,
+    "responses":Map<string,
+    {
+      "assignment_id":string,
+      "response":Array<string>
+    }>
+  }> = new Map<string, {
+    "pending":boolean,
+    "responses":Map<string,
+    {
+      "assignment_id":string,
+      "response":Array<string>
+    }>
+    }>();
   // let HITs_status:Map<string, {pending:boolean, responses:Array<Array<string>>}> = new Map<string, {pending:boolean, responses:Array<Array<string>>}>();
-  let duplicated_assignment_ids:Array<string> = new Array<string>();
+  // let duplicated_assignment_ids:Array<string> = new Array<string>();
   (async () => {
     const hits_result = await mturk.listHITs();
     const writePromises:Array<Promise<void>> = hits_result.map(async (h) => {
@@ -280,9 +299,9 @@ function retrieve_results() {
         // get pending status
         if (!HITs_status.has(id)){
           if (h.getHITStatus() === 'Assignable'){
-            HITs_status.set(id, {pending: true, responses: new Map<string, {"assignment_id":string, "response":Array<string>, "submitTime": Date}>()});
+            HITs_status.set(id, {pending: true, responses: new Map<string, {"assignment_id":string, "response":Array<string>}>()});
           } else {
-            HITs_status.set(id, {pending: false, responses: new Map<string, {"assignment_id":string, "response":Array<string>, "submitTime": Date}>()});
+            HITs_status.set(id, {pending: false, responses: new Map<string, {"assignment_id":string, "response":Array<string>}>()});
           }
         } else {
           if (h.getHITStatus() === 'Assignable'){
@@ -293,28 +312,15 @@ function retrieve_results() {
       // if there are assignments, add to respones
       const assignments = await h.listAssignments();
       await assignments.forEach((a, i) => {
-        let submitTime:Date = a.getSubmitTime();
         a.getAnswers().forEach((v, k) => {
           let worker_id:string = a.getWorkerId();
-          let respones:Map<string, {"assignment_id":string, "response":Array<string>, "submitTime": Date}> = HITs_status.get(k).responses;
-          if (respones.has(worker_id)){
-            let response:{"assignment_id":string, "response":Array<string>, "submitTime": Date} = respones.get(worker_id);
-            // let recored_submit_time:Date = respones.get(worker_id).submitTime;
-            if (submitTime < response.submitTime){
-              response.response = v;
-              response.submitTime = submitTime;
-              duplicated_assignment_ids.push(response.assignment_id);
-              response.assignment_id = a.getID();
-            }
-          } else {
-            HITs_status.get(k).responses.set(worker_id, {"assignment_id": a.getID(), "response": v, "submitTime": a.getSubmitTime()});
-          }
+          let respones:Map<string, {"assignment_id":string, "response":Array<string>}> = HITs_status.get(k).responses;
         });
       });
     });
     await Promise.all(writePromises);
     writeFile("result.json", getResult(HITs_status));
-    writeFile("duplicated_assignment_ids.json", JSON.stringify(duplicated_assignment_ids));
+    // writeFile("duplicated_assignment_ids.json", JSON.stringify(duplicated_assignment_ids));
     console.log('all done writing');
   })();
 }
