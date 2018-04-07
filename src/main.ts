@@ -185,7 +185,7 @@ function post_hits(){
       for (let idx = 0; idx != new_HITs.length; idx++){
         const len = new_HITs[idx].comments.messages.length;
         const duration = len * TIME_PER_COMMENT_IN_SECONDS;
-        const lifetime = 120;
+        const lifetime = 180;
         const reward = String(len * RATE);
         let ops:Options = {
           Title: 'GitHub Pull Requests',
@@ -311,10 +311,12 @@ function retrieve_results() {
         a.getAnswers().forEach((v, k) => {
           let worker_id:string = a.getWorkerId();
           let respones:Map<string, {"assignment_id":string, "response":Array<string>}> = HITs_status.get(k).responses;
+          respones.set(worker_id, {"assignment_id": a.getID(), "response": v});
         });
       });
     });
     await Promise.all(writePromises);
+    console.log(HITs_status);
     writeFile("result.json", getResult(HITs_status));
     console.log('all done writing');
   })();

@@ -30,7 +30,7 @@ class MturkUtil:
         with open(self.NO_POST, 'r') as f:
             no_post = json.load(f)
         self.completed_set = set(no_post['completed'])
-        self.pending = set(no_post['pending'])
+        # self.pending = set(no_post['pending'])
 
         # read process
         with open(self.PROCESS, 'r') as f:
@@ -81,6 +81,14 @@ class MturkUtil:
         else:
             print("Approve failed: the assignment status is not submitted but {}".format(status))
 
+    def approve_all_assignments(self):
+        for assignment_id in self.approve:
+            self.approve_assignment(assignment_id)
+
+    def reject_all_assignments(self):
+        for assignment_id in self.reject:
+            self.reject_assignment(assignment_id, feedback='You get less than {}% label(s) correct'.format(self.CORRECT_RATE * 100))
+
     def reject_assignment(self, assignment_id, feedback=''):
         status = self.client.get_assignment(AssignmentId=assignment_id)['Assignment']['AssignmentStatus']
         if status == 'Submitted':
@@ -118,12 +126,12 @@ class MturkUtil:
         )
 
     def process_retrieved_results(self):
+        pending_set = set()
         for issue_id in self.retrieved_results:
             workers = set()
-            print(issue_id)
             for comment_id in self.retrieved_results[issue_id]:
                 if self.retrieved_results[issue_id][comment_id]['pending']:
-                    self.pending.add(issue_id)
+                    pending_set.add(issue_id)
                 if not self.retrieved_results[issue_id][comment_id]['responses']:
                     # no one has responded this issue, check next issue id
                     if issue_id not in self.process:
@@ -136,7 +144,6 @@ class MturkUtil:
                 if issue_id in self.completed:
                     self.update_completed(issue_id, comment_id, responses, workers)
                 else:
-                    print('heyheyhey')
                     self.update_process(issue_id, comment_id, responses, workers)
 
             if issue_id not in self.issue_qualification:
@@ -145,8 +152,7 @@ class MturkUtil:
                     'workers': []
                 }
             if not self.issue_qualification[issue_id]['valid']:
-                # new_qualification_type_id = self.get_new_qualification_type_id(issue_id)
-                new_qualification_type_id = "lalala"
+                new_qualification_type_id = self.get_new_qualification_type_id(issue_id)
                 self.issue_qualification[issue_id]['q_id'] = new_qualification_type_id
                 self.issue_qualification[issue_id]['valid'] = True
             record_workers = set(self.issue_qualification[issue_id]['workers'])
@@ -161,7 +167,7 @@ class MturkUtil:
 
         no_post = {
             'completed': list(self.completed_set),
-            'pending': list(self.pending)
+            'pending': list(pending_set)
         }
         with open(self.COMPLETED, 'w') as f:
             f.write(json.dumps(self.completed))
@@ -251,5 +257,35 @@ class MturkUtil:
         self.update_approve_reject()
 
 if __name__ == '__main__':
-    mturk_util = MturkUtil()
-    mturk_util.evaluate_raw_data()
+    if len(sys.argv) < 3:
+        print('Please provide mode action')
+        print('\tmode: 1 for sandbox, 2 for production, and')
+        print('\taction: e for evaluate, a for approve assignments, r for reject assignments')
+        exit(1)
+
+    SANDBOX = '1'
+    PRODUCTION = '2'
+    ACTION_EVALUATE = 'e'
+    ACTION_APPROVE = 'a'
+    ACTION_REJECT = 'r'
+
+    mode = sys.argv[1]
+    action = sys.argv[2]
+    mturk_util = None
+    if mode == SANDBOX:
+        mturk_util = MturkUtil()
+    elif mode == PRODUCTION:
+        mturk_util = MturkUtil(sandbox=False)
+    else:
+        print('mode can only be 1 for sandbox or 2 fro production')
+        exit(1)
+
+    if action == ACTION_EVALUATE:
+        mturk_util.evaluate_raw_data()
+    elif action == ACTION_APPROVE:
+        mturk_util.approve_all_assignments()
+    elif action == ACTION_REJECT:
+        mturk_util.reject_all_assignments()
+    else:
+        print('action can only be e for evaluate, a for approve, or r for reject')
+        exit(1)
