@@ -130,13 +130,13 @@ for issue_id in results:
             else:
                 reject_ids.add(assignment_id)
 
-with open('feedbacks.json', 'w') as f:
+with open('issue_feedback.json', 'w') as f:
     f.write(json.dumps(issue_feedbacks))
 
 with open('completed.json', 'w') as f:
     f.write(json.dumps(completed))
 
-with open('no_posting.json', 'w') as f:
+with open('no_post.json', 'w') as f:
     f.write(json.dumps(no_posting))
 
 print(list(approve_ids))
