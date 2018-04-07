@@ -42,7 +42,6 @@ interface Qualification {
 }
 
 const GHDiscussionTemplate:string = 'GithubDiscussionTemplate';
-// const PATH:string = '/Users/vanditagarwal/Downloads/SI_Soney/gh_mining/memoized_db';
 const PATH:string = '.';
 const RATE:number = 0.02;
 const TIME_PER_COMMENT_IN_SECONDS:number = 300;
@@ -66,7 +65,6 @@ function post_hits(){
     let new_HITs:HIT[] = [];
     let finished:boolean = false;
     for (let file in files){
-      // let issues = require(files[file]);
       let issues = require('../data.json');
       for (let issue_id in issues){
         // issue_id which has not been posted yet
@@ -289,7 +287,6 @@ function retrieve_results() {
     }>
     }>();
   // let HITs_status:Map<string, {pending:boolean, responses:Array<Array<string>>}> = new Map<string, {pending:boolean, responses:Array<Array<string>>}>();
-  // let duplicated_assignment_ids:Array<string> = new Array<string>();
   (async () => {
     const hits_result = await mturk.listHITs();
     const writePromises:Array<Promise<void>> = hits_result.map(async (h) => {
@@ -320,7 +317,6 @@ function retrieve_results() {
     });
     await Promise.all(writePromises);
     writeFile("result.json", getResult(HITs_status));
-    // writeFile("duplicated_assignment_ids.json", JSON.stringify(duplicated_assignment_ids));
     console.log('all done writing');
   })();
 }
