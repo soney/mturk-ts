@@ -28,9 +28,8 @@ class MturkUtil:
 
         # read no post
         with open(self.NO_POST, 'r') as f:
-            no_post = json.load(f)
-        self.completed_set = set(no_post['completed'])
-        # self.pending = set(no_post['pending'])
+            self.no_post = json.load(f)
+        self.completed_set = set(self.no_post['completed'])
 
         # read process
         with open(self.PROCESS, 'r') as f:
@@ -82,10 +81,18 @@ class MturkUtil:
             print("Approve failed: the assignment status is not submitted but {}".format(status))
 
     def approve_all_assignments(self):
+        if len(self.no_post['pending']) > 0:
+            print("Some issue is still pending, cannot approve any assignment id")
+            return
+
         for assignment_id in self.approve:
             self.approve_assignment(assignment_id)
 
     def reject_all_assignments(self):
+        if len(self.no_post['pending']) > 0:
+            print("Some issue is still pending, cannot reject any assignment id")
+            return
+
         for assignment_id in self.reject:
             self.reject_assignment(assignment_id, feedback='You get less than {}% label(s) correct'.format(self.CORRECT_RATE * 100))
 
@@ -172,7 +179,7 @@ class MturkUtil:
                 self.completed_set.add(issue_id)
                 self.completed[issue_id] = self.process.pop(issue_id)
 
-        no_post = {
+        self.no_post = {
             'completed': list(self.completed_set),
             'pending': list(pending_set)
         }
@@ -181,7 +188,7 @@ class MturkUtil:
         with open(self.PROCESS, 'w') as f:
             f.write(json.dumps(self.process))
         with open(self.NO_POST, 'w') as f:
-            f.write(json.dumps(no_post))
+            f.write(json.dumps(self.no_post))
         with open(self.ISSUE_QUALIFICATION, 'w') as f:
             f.write(json.dumps(self.issue_qualification))
 
