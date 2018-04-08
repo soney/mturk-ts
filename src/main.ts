@@ -52,6 +52,7 @@ function post_hits(){
   let posted_status = require('../no_post.json');
   let pending_list = posted_status['pending'];
   let completed = posted_status['completed']
+  let bad_issue_ids = require('../bad_issue_ids.json');
   let new_posts_num = MAX_NUM_PENDING_HITS - pending_list.length;
 
   if (new_posts_num <= 0){
@@ -68,7 +69,7 @@ function post_hits(){
       let issues = require(files[file]);
       for (let issue_id in issues){
         // issue_id which has not been posted yet
-        if (pending_list.indexOf(issue_id) == -1 && completed_list.indexOf(issue_id) == -1){
+        if (pending_list.indexOf(issue_id) == -1 && completed_list.indexOf(issue_id) == -1 && bad_issue_ids.indexOf(issue_id) == -1){
           // decrement new_posts_num
           new_posts_num -= 1;
           let messages_list:GitHubMessageTemplate["messages"] = [];
@@ -207,16 +208,20 @@ function post_hits(){
         catch (error){
           console.log("Caught an exception");
           console.log(error.message);
+          console.log("---------------------------------------------------------------");
           if (error.message == 'Rate exceeded'){
             idx = idx - 1;
             await sleep(2000);
-          };
-
-          if (error.message.indexOf('QualificationTypeId') >= 0){
+          } else if (error.message.indexOf('QualificationTypeId') >= 0){
             issueIdToQId[new_HITs[idx].issue_id]['valid'] = false;
+          } else {
+            console.log("Bad issue id " + new_HITs[idx].issue_id);
+            bad_issue_ids.push(new_HITs[idx].issue_id);
+            continue;
           }
         }
       }
+      writeFile("bad_issue_ids.json", JSON.stringify(bad_issue_ids));
       writeFile("issue_qualification.json", JSON.stringify(issueIdToQId));
     })();
   });

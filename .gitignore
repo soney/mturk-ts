@@ -66,3 +66,5 @@ typings/
 mturk_creds.json
 
 env/
+venv/
+result.json
