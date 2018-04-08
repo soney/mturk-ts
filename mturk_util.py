@@ -163,7 +163,10 @@ class MturkUtil:
                 try:
                     self.grant_worker_qualification(worker_id, self.issue_qualification[issue_id]['q_id'])
                 except Exception as e:
-                    print('Worker {} has already granted a qualification'.format(worker_id))
+                    print('Worker {} has already granted a qualification for issue id {}'.format(worker_id, issue_id))
+
+            if issue_id in self.completed:
+                continue
 
             if self.is_issue_completed(issue_id):
                 self.completed_set.add(issue_id)
@@ -226,6 +229,8 @@ class MturkUtil:
                     'assignment_id': feedback[worker_id]['assignment_id'],
                     'feedback': feedback[worker_id]['response']
                 }
+        with open(self.ISSUE_FEEDBACK, 'w') as f:
+            f.write(json.dumps(self.issue_feedback))
 
     def get_retrieved_results(self, issue_comment_id, status_responses):
         issue_id, comment_id = issue_comment_id.split('_')
@@ -243,12 +248,13 @@ class MturkUtil:
                             assignment_id_to_correct_count[assignment_id] = 0
                         if len(assignment_ids) >= self.AGREEMENT_COUNT:
                             assignment_id_to_correct_count[assignment_id] += 1
-            for assignment_id, correct_count in assignment_id_to_correct_count:
-                if assignment_id not in self.approve and assignment_id not in self.reject:
-                    if correct_count / len(self.completed[issue_id]) >= self.CORRECT_RATE:
-                        self.approve.add(assignment_id)
-                    else:
-                        self.reject.add(assignment_id)
+            for assignment_id, correct_count in assignment_id_to_correct_count.items():
+                if correct_count / len(self.completed[issue_id]) >= self.CORRECT_RATE:
+                    if assignment_id in self.reject:
+                        self.reject.remove(assignment_id)
+                    self.approve.add(assignment_id)
+                else:
+                    self.reject.add(assignment_id)
 
         with open(self.APPROVE, 'w') as f:
             f.write(json.dumps(list(self.approve)))
