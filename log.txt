@@ -1,0 +1,634 @@
+2018_04_08_14_28_54
+
+> mturk-ts@0.0.1 start /Users/Xu/Desktop/gh_workspace/mturk/mturk-ts
+> npm run build;node ./built/main.js "2"
+
+
+> mturk-ts@0.0.1 build /Users/Xu/Desktop/gh_workspace/mturk/mturk-ts
+> tsc
+
+all done writing
+finished retrieving
+Start Mturk Util with production
+Worker A1Q1HSGBD1POWV has already granted a qualification for issue id 285
+Worker A3GDG4D8N1M220 has already granted a qualification for issue id 285
+Worker AD1ILDUXZHASF has already granted a qualification for issue id 285
+Worker A2DHLFPCDUTK2O has already granted a qualification for issue id 89
+Worker ARCROXZI0H0SW has already granted a qualification for issue id 89
+Worker A5BCSSPC180AG has already granted a qualification for issue id 89
+Worker A2DHLFPCDUTK2O has already granted a qualification for issue id 529
+Worker A1RATFICCKLCQ has already granted a qualification for issue id 529
+Worker ARCROXZI0H0SW has already granted a qualification for issue id 529
+Worker A1NOINYD1FZ55T has already granted a qualification for issue id 1035
+Worker A3RKC05CTZRX2M has already granted a qualification for issue id 1035
+Worker A1SDJOMBXA43VR has already granted a qualification for issue id 1035
+Worker AVHZJ2HQJG3NB has already granted a qualification for issue id 1027
+Worker A1SDJOMBXA43VR has already granted a qualification for issue id 1027
+Worker A2KUWEN5J9VHLM has already granted a qualification for issue id 1027
+Worker A1OMWAZ59NKDKD has already granted a qualification for issue id 1027
+Worker A20TZ24SQJ8B9T has already granted a qualification for issue id 1027
+Worker A1NOINYD1FZ55T has already granted a qualification for issue id 1030
+Worker A27TLMSTDJ4UN4 has already granted a qualification for issue id 1030
+Worker A1SDJOMBXA43VR has already granted a qualification for issue id 1030
+Worker A30BM2XZJR61S1 has already granted a qualification for issue id 1030
+finished evaluating
+Start Mturk Util with production
+Approve failed: the assignment status is not submitted but Approved
+Approve failed: the assignment status is not submitted but Approved
+Approve failed: the assignment status is not submitted but Approved
+Approve failed: the assignment status is not submitted but Approved
+Approve failed: the assignment status is not submitted but Approved
+Approve failed: the assignment status is not submitted but Approved
+Approve failed: the assignment status is not submitted but Approved
+Approve failed: the assignment status is not submitted but Approved
+Approve failed: the assignment status is not submitted but Approved
+Approve failed: the assignment status is not submitted but Approved
+finished approving
+Start Mturk Util with production
+Reject failed: the assignment status is not submitted but Rejected
+Reject failed: the assignment status is not submitted but Rejected
+Reject failed: the assignment status is not submitted but Rejected
+finished rejecting
+
+> mturk-ts@0.0.1 start /Users/Xu/Desktop/gh_workspace/mturk/mturk-ts
+> npm run build;node ./built/main.js "1"
+
+
+> mturk-ts@0.0.1 build /Users/Xu/Desktop/gh_workspace/mturk/mturk-ts
+> tsc
+
+[ { issue_id: '89',
+    comments: { messages: [Array], messageTypes: [Array] } },
+  { issue_id: '285',
+    comments: { messages: [Array], messageTypes: [Array] } },
+  { issue_id: '647',
+    comments: { messages: [Array], messageTypes: [Array] } },
+  { issue_id: '818',
+    comments: { messages: [Array], messageTypes: [Array] } } ]
+finished posting
+====================================================================================
+====================================================================================
+2018_04_08_14_32_55
+
+> mturk-ts@0.0.1 start /Users/Xu/Desktop/gh_workspace/mturk/mturk-ts
+> npm run build;node ./built/main.js "2"
+
+
+> mturk-ts@0.0.1 build /Users/Xu/Desktop/gh_workspace/mturk/mturk-ts
+> tsc
+
+all done writing
+finished retrieving
+Start Mturk Util with production
+Worker AD1ILDUXZHASF has already granted a qualification for issue id 647
+Worker APD8A11HXR94C has already granted a qualification for issue id 89
+Worker A2DHLFPCDUTK2O has already granted a qualification for issue id 89
+Worker A5BCSSPC180AG has already granted a qualification for issue id 89
+Worker ARCROXZI0H0SW has already granted a qualification for issue id 89
+Worker APD8A11HXR94C has already granted a qualification for issue id 285
+Worker A1Q1HSGBD1POWV has already granted a qualification for issue id 285
+Worker AHDWHKE8IDNOG has already granted a qualification for issue id 285
+Worker A3GDG4D8N1M220 has already granted a qualification for issue id 285
+Worker AD1ILDUXZHASF has already granted a qualification for issue id 285
+Worker A1RATFICCKLCQ has already granted a qualification for issue id 529
+Worker A2DHLFPCDUTK2O has already granted a qualification for issue id 529
+Worker ARCROXZI0H0SW has already granted a qualification for issue id 529
+finished evaluating
+Start Mturk Util with production
+Some issue is still pending, cannot approve any assignment id
+finished approving
+Start Mturk Util with production
+Some issue is still pending, cannot reject any assignment id
+finished rejecting
+
+> mturk-ts@0.0.1 start /Users/Xu/Desktop/gh_workspace/mturk/mturk-ts
+> npm run build;node ./built/main.js "1"
+
+
+> mturk-ts@0.0.1 build /Users/Xu/Desktop/gh_workspace/mturk/mturk-ts
+> tsc
+
+[ { issue_id: '818',
+    comments: { messages: [Array], messageTypes: [Array] } } ]
+finished posting
+====================================================================================
+====================================================================================
+2018_04_08_14_43_16
+
+> mturk-ts@0.0.1 start /Users/Xu/Desktop/gh_workspace/mturk/mturk-ts
+> npm run build;node ./built/main.js "2"
+
+
+> mturk-ts@0.0.1 build /Users/Xu/Desktop/gh_workspace/mturk/mturk-ts
+> tsc
+
+all done writing
+finished retrieving
+Start Mturk Util with production
+Worker AD1ILDUXZHASF has already granted a qualification for issue id 647
+Worker ARCROXZI0H0SW has already granted a qualification for issue id 89
+Worker A5BCSSPC180AG has already granted a qualification for issue id 89
+Worker A2DHLFPCDUTK2O has already granted a qualification for issue id 89
+Worker APD8A11HXR94C has already granted a qualification for issue id 89
+Worker A1Q1HSGBD1POWV has already granted a qualification for issue id 285
+Worker AHDWHKE8IDNOG has already granted a qualification for issue id 285
+Worker APD8A11HXR94C has already granted a qualification for issue id 285
+Worker AD1ILDUXZHASF has already granted a qualification for issue id 285
+Worker A3GDG4D8N1M220 has already granted a qualification for issue id 285
+Worker ARCROXZI0H0SW has already granted a qualification for issue id 529
+Worker A2DHLFPCDUTK2O has already granted a qualification for issue id 529
+Worker A1RATFICCKLCQ has already granted a qualification for issue id 529
+finished evaluating
+Start Mturk Util with production
+Some issue is still pending, cannot approve any assignment id
+finished approving
+Start Mturk Util with production
+Some issue is still pending, cannot reject any assignment id
+finished rejecting
+
+> mturk-ts@0.0.1 start /Users/Xu/Desktop/gh_workspace/mturk/mturk-ts
+> npm run build;node ./built/main.js "1"
+
+
+> mturk-ts@0.0.1 build /Users/Xu/Desktop/gh_workspace/mturk/mturk-ts
+> tsc
+
+[ { issue_id: '820',
+    comments: { messages: [Array], messageTypes: [Array] } } ]
+finished posting
+====================================================================================
+====================================================================================
+2018_04_08_14_53_40
+
+> mturk-ts@0.0.1 start /Users/Xu/Desktop/gh_workspace/mturk/mturk-ts
+> npm run build;node ./built/main.js "2"
+
+
+> mturk-ts@0.0.1 build /Users/Xu/Desktop/gh_workspace/mturk/mturk-ts
+> tsc
+
+all done writing
+finished retrieving
+Start Mturk Util with production
+Worker A37HSI1HVGN891 has already granted a qualification for issue id 818
+Worker AQTBYF6PERTW0 has already granted a qualification for issue id 818
+Worker AGX171Q54YXPI has already granted a qualification for issue id 818
+Worker AGX171Q54YXPI has already granted a qualification for issue id 647
+Worker AD1ILDUXZHASF has already granted a qualification for issue id 647
+Worker A3F2UUP5LDLESJ has already granted a qualification for issue id 647
+Worker ARCROXZI0H0SW has already granted a qualification for issue id 89
+Worker A2DHLFPCDUTK2O has already granted a qualification for issue id 89
+Worker A5BCSSPC180AG has already granted a qualification for issue id 89
+Worker APD8A11HXR94C has already granted a qualification for issue id 89
+Worker A1Q1HSGBD1POWV has already granted a qualification for issue id 285
+Worker A1MGY4WBYIYMIP has already granted a qualification for issue id 285
+Worker APD8A11HXR94C has already granted a qualification for issue id 285
+Worker A2CAL91833NOC3 has already granted a qualification for issue id 285
+Worker AD1ILDUXZHASF has already granted a qualification for issue id 285
+Worker A3GDG4D8N1M220 has already granted a qualification for issue id 285
+Worker AHDWHKE8IDNOG has already granted a qualification for issue id 285
+finished evaluating
+Start Mturk Util with production
+Some issue is still pending, cannot approve any assignment id
+finished approving
+Start Mturk Util with production
+Some issue is still pending, cannot reject any assignment id
+finished rejecting
+
+> mturk-ts@0.0.1 start /Users/Xu/Desktop/gh_workspace/mturk/mturk-ts
+> npm run build;node ./built/main.js "1"
+
+
+> mturk-ts@0.0.1 build /Users/Xu/Desktop/gh_workspace/mturk/mturk-ts
+> tsc
+
+[ { issue_id: '821',
+    comments: { messages: [Array], messageTypes: [Array] } } ]
+finished posting
+====================================================================================
+====================================================================================
+2018_04_08_15_04_04
+
+> mturk-ts@0.0.1 start /Users/Xu/Desktop/gh_workspace/mturk/mturk-ts
+> npm run build;node ./built/main.js "2"
+
+
+> mturk-ts@0.0.1 build /Users/Xu/Desktop/gh_workspace/mturk/mturk-ts
+> tsc
+
+all done writing
+finished retrieving
+Start Mturk Util with production
+Worker A1G26TDLAIA1B7 has already granted a qualification for issue id 820
+Worker A1G26TDLAIA1B7 has already granted a qualification for issue id 818
+Worker APD8A11HXR94C has already granted a qualification for issue id 818
+Worker AQTBYF6PERTW0 has already granted a qualification for issue id 818
+Worker AGX171Q54YXPI has already granted a qualification for issue id 818
+Worker A2A1D52ZPSW6L9 has already granted a qualification for issue id 818
+Worker A37HSI1HVGN891 has already granted a qualification for issue id 818
+Worker AD1ILDUXZHASF has already granted a qualification for issue id 647
+Worker A2RWG1BDW949U1 has already granted a qualification for issue id 647
+Worker APD8A11HXR94C has already granted a qualification for issue id 647
+Worker AGX171Q54YXPI has already granted a qualification for issue id 647
+Worker A1SOLLV4X7XQ0U has already granted a qualification for issue id 647
+Worker A3F2UUP5LDLESJ has already granted a qualification for issue id 647
+Worker A5BCSSPC180AG has already granted a qualification for issue id 89
+Worker ARCROXZI0H0SW has already granted a qualification for issue id 89
+Worker APD8A11HXR94C has already granted a qualification for issue id 89
+Worker A2DHLFPCDUTK2O has already granted a qualification for issue id 89
+Worker AD1ILDUXZHASF has already granted a qualification for issue id 285
+Worker APD8A11HXR94C has already granted a qualification for issue id 285
+Worker A1JHSM8575PBS9 has already granted a qualification for issue id 285
+Worker A1MGY4WBYIYMIP has already granted a qualification for issue id 285
+Worker AHDWHKE8IDNOG has already granted a qualification for issue id 285
+Worker A1Q1HSGBD1POWV has already granted a qualification for issue id 285
+Worker A2CAL91833NOC3 has already granted a qualification for issue id 285
+Worker A3GDG4D8N1M220 has already granted a qualification for issue id 285
+finished evaluating
+Start Mturk Util with production
+Some issue is still pending, cannot approve any assignment id
+finished approving
+Start Mturk Util with production
+Some issue is still pending, cannot reject any assignment id
+finished rejecting
+
+> mturk-ts@0.0.1 start /Users/Xu/Desktop/gh_workspace/mturk/mturk-ts
+> npm run build;node ./built/main.js "1"
+
+
+> mturk-ts@0.0.1 build /Users/Xu/Desktop/gh_workspace/mturk/mturk-ts
+> tsc
+
+[ { issue_id: '821',
+    comments: { messages: [Array], messageTypes: [Array] } },
+  { issue_id: '822',
+    comments: { messages: [Array], messageTypes: [Array] } },
+  { issue_id: '824',
+    comments: { messages: [Array], messageTypes: [Array] } } ]
+finished posting
+====================================================================================
+====================================================================================
+2018_04_08_15_14_29
+
+> mturk-ts@0.0.1 start /Users/Xu/Desktop/gh_workspace/mturk/mturk-ts
+> npm run build;node ./built/main.js "2"
+
+
+> mturk-ts@0.0.1 build /Users/Xu/Desktop/gh_workspace/mturk/mturk-ts
+> tsc
+
+all done writing
+finished retrieving
+Start Mturk Util with production
+Worker AD1ILDUXZHASF has already granted a qualification for issue id 821
+Worker A1G26TDLAIA1B7 has already granted a qualification for issue id 821
+Worker A1G26TDLAIA1B7 has already granted a qualification for issue id 820
+Worker AQTBYF6PERTW0 has already granted a qualification for issue id 818
+Worker A1G26TDLAIA1B7 has already granted a qualification for issue id 818
+Worker A1KMXHFW44QOLH has already granted a qualification for issue id 818
+Worker APD8A11HXR94C has already granted a qualification for issue id 818
+Worker A37HSI1HVGN891 has already granted a qualification for issue id 818
+Worker A2A1D52ZPSW6L9 has already granted a qualification for issue id 818
+Worker AGX171Q54YXPI has already granted a qualification for issue id 818
+Worker A1SOLLV4X7XQ0U has already granted a qualification for issue id 647
+Worker AD1ILDUXZHASF has already granted a qualification for issue id 647
+Worker APD8A11HXR94C has already granted a qualification for issue id 647
+Worker A3F2UUP5LDLESJ has already granted a qualification for issue id 647
+Worker AGX171Q54YXPI has already granted a qualification for issue id 647
+Worker A2RWG1BDW949U1 has already granted a qualification for issue id 647
+Worker A1G26TDLAIA1B7 has already granted a qualification for issue id 89
+Worker APD8A11HXR94C has already granted a qualification for issue id 89
+Worker A2A1D52ZPSW6L9 has already granted a qualification for issue id 89
+Worker ARCROXZI0H0SW has already granted a qualification for issue id 89
+Worker A2DHLFPCDUTK2O has already granted a qualification for issue id 89
+Worker A5BCSSPC180AG has already granted a qualification for issue id 89
+Worker AD1ILDUXZHASF has already granted a qualification for issue id 285
+Worker A1MGY4WBYIYMIP has already granted a qualification for issue id 285
+Worker A1JHSM8575PBS9 has already granted a qualification for issue id 285
+Worker A1G26TDLAIA1B7 has already granted a qualification for issue id 285
+Worker A1Q1HSGBD1POWV has already granted a qualification for issue id 285
+Worker APD8A11HXR94C has already granted a qualification for issue id 285
+Worker A2CAL91833NOC3 has already granted a qualification for issue id 285
+Worker AHDWHKE8IDNOG has already granted a qualification for issue id 285
+Worker A3GDG4D8N1M220 has already granted a qualification for issue id 285
+finished evaluating
+Start Mturk Util with production
+Some issue is still pending, cannot approve any assignment id
+finished approving
+Start Mturk Util with production
+Some issue is still pending, cannot reject any assignment id
+finished rejecting
+
+> mturk-ts@0.0.1 start /Users/Xu/Desktop/gh_workspace/mturk/mturk-ts
+> npm run build;node ./built/main.js "1"
+
+
+> mturk-ts@0.0.1 build /Users/Xu/Desktop/gh_workspace/mturk/mturk-ts
+> tsc
+
+[ { issue_id: '824',
+    comments: { messages: [Array], messageTypes: [Array] } },
+  { issue_id: '826',
+    comments: { messages: [Array], messageTypes: [Array] } } ]
+finished posting
+====================================================================================
+====================================================================================
+2018_04_08_15_24_58
+
+> mturk-ts@0.0.1 start /Users/Xu/Desktop/gh_workspace/mturk/mturk-ts
+> npm run build;node ./built/main.js "2"
+
+
+> mturk-ts@0.0.1 build /Users/Xu/Desktop/gh_workspace/mturk/mturk-ts
+> tsc
+
+all done writing
+finished retrieving
+Start Mturk Util with production
+Worker A3RKC05CTZRX2M has already granted a qualification for issue id 824
+Worker A3BL2ZEODD79AZ has already granted a qualification for issue id 824
+Worker AG8PCITDPLLKU has already granted a qualification for issue id 821
+Worker AD1ILDUXZHASF has already granted a qualification for issue id 821
+Worker A1G26TDLAIA1B7 has already granted a qualification for issue id 821
+Worker A3RKC05CTZRX2M has already granted a qualification for issue id 821
+Worker AYXXMHLZRAPF9 has already granted a qualification for issue id 821
+Worker AD1ILDUXZHASF has already granted a qualification for issue id 822
+Worker A3RKC05CTZRX2M has already granted a qualification for issue id 822
+Worker AYXXMHLZRAPF9 has already granted a qualification for issue id 822
+Worker A1G26TDLAIA1B7 has already granted a qualification for issue id 820
+Worker AG8PCITDPLLKU has already granted a qualification for issue id 820
+Worker APD8A11HXR94C has already granted a qualification for issue id 818
+Worker AQTBYF6PERTW0 has already granted a qualification for issue id 818
+Worker A2A1D52ZPSW6L9 has already granted a qualification for issue id 818
+Worker AGX171Q54YXPI has already granted a qualification for issue id 818
+Worker A37HSI1HVGN891 has already granted a qualification for issue id 818
+Worker A1G26TDLAIA1B7 has already granted a qualification for issue id 818
+Worker A1KMXHFW44QOLH has already granted a qualification for issue id 818
+Worker APD8A11HXR94C has already granted a qualification for issue id 647
+Worker AGX171Q54YXPI has already granted a qualification for issue id 647
+Worker AD1ILDUXZHASF has already granted a qualification for issue id 647
+Worker A2RWG1BDW949U1 has already granted a qualification for issue id 647
+Worker A3F2UUP5LDLESJ has already granted a qualification for issue id 647
+Worker A1SOLLV4X7XQ0U has already granted a qualification for issue id 647
+finished evaluating
+Start Mturk Util with production
+Some issue is still pending, cannot approve any assignment id
+finished approving
+Start Mturk Util with production
+Some issue is still pending, cannot reject any assignment id
+finished rejecting
+
+> mturk-ts@0.0.1 start /Users/Xu/Desktop/gh_workspace/mturk/mturk-ts
+> npm run build;node ./built/main.js "1"
+
+
+> mturk-ts@0.0.1 build /Users/Xu/Desktop/gh_workspace/mturk/mturk-ts
+> tsc
+
+The number of pending HITs is maximum: 4
+finished posting
+====================================================================================
+====================================================================================
+2018_04_08_15_35_19
+
+> mturk-ts@0.0.1 start /Users/Xu/Desktop/gh_workspace/mturk/mturk-ts
+> npm run build;node ./built/main.js "2"
+
+
+> mturk-ts@0.0.1 build /Users/Xu/Desktop/gh_workspace/mturk/mturk-ts
+> tsc
+
+all done writing
+finished retrieving
+Start Mturk Util with production
+Worker A24ROQ4MB9C29M has already granted a qualification for issue id 824
+Worker A3RKC05CTZRX2M has already granted a qualification for issue id 824
+Worker A3BL2ZEODD79AZ has already granted a qualification for issue id 824
+Worker A2XGOBIWUDYLOT has already granted a qualification for issue id 824
+Worker A3RKC05CTZRX2M has already granted a qualification for issue id 821
+Worker A1G26TDLAIA1B7 has already granted a qualification for issue id 821
+Worker AYXXMHLZRAPF9 has already granted a qualification for issue id 821
+Worker AG8PCITDPLLKU has already granted a qualification for issue id 821
+Worker A1KMXHFW44QOLH has already granted a qualification for issue id 821
+Worker AD1ILDUXZHASF has already granted a qualification for issue id 821
+Worker AYXXMHLZRAPF9 has already granted a qualification for issue id 822
+Worker A3RKC05CTZRX2M has already granted a qualification for issue id 822
+Worker AD1ILDUXZHASF has already granted a qualification for issue id 822
+Worker AG8PCITDPLLKU has already granted a qualification for issue id 820
+Worker A1G26TDLAIA1B7 has already granted a qualification for issue id 820
+Worker A37HSI1HVGN891 has already granted a qualification for issue id 818
+Worker A1G26TDLAIA1B7 has already granted a qualification for issue id 818
+Worker A1KMXHFW44QOLH has already granted a qualification for issue id 818
+Worker AGX171Q54YXPI has already granted a qualification for issue id 818
+Worker AQTBYF6PERTW0 has already granted a qualification for issue id 818
+Worker APD8A11HXR94C has already granted a qualification for issue id 818
+Worker A2A1D52ZPSW6L9 has already granted a qualification for issue id 818
+Worker A3F2UUP5LDLESJ has already granted a qualification for issue id 647
+Worker A2RWG1BDW949U1 has already granted a qualification for issue id 647
+Worker AGX171Q54YXPI has already granted a qualification for issue id 647
+Worker A1SOLLV4X7XQ0U has already granted a qualification for issue id 647
+Worker APD8A11HXR94C has already granted a qualification for issue id 647
+Worker AD1ILDUXZHASF has already granted a qualification for issue id 647
+finished evaluating
+Start Mturk Util with production
+Some issue is still pending, cannot approve any assignment id
+finished approving
+Start Mturk Util with production
+Some issue is still pending, cannot reject any assignment id
+finished rejecting
+
+> mturk-ts@0.0.1 start /Users/Xu/Desktop/gh_workspace/mturk/mturk-ts
+> npm run build;node ./built/main.js "1"
+
+
+> mturk-ts@0.0.1 build /Users/Xu/Desktop/gh_workspace/mturk/mturk-ts
+> tsc
+
+[ { issue_id: '828',
+    comments: { messages: [Array], messageTypes: [Array] } },
+  { issue_id: '829',
+    comments: { messages: [Array], messageTypes: [Array] } },
+  { issue_id: '831',
+    comments: { messages: [Array], messageTypes: [Array] } } ]
+finished posting
+====================================================================================
+====================================================================================
+2018_04_08_15_45_46
+
+> mturk-ts@0.0.1 start /Users/Xu/Desktop/gh_workspace/mturk/mturk-ts
+> npm run build;node ./built/main.js "2"
+
+
+> mturk-ts@0.0.1 build /Users/Xu/Desktop/gh_workspace/mturk/mturk-ts
+> tsc
+
+all done writing
+finished retrieving
+Start Mturk Util with production
+Worker A27TLMSTDJ4UN4 has already granted a qualification for issue id 826
+Worker AFEQQ8ZKHVZFW has already granted a qualification for issue id 826
+Worker APD8A11HXR94C has already granted a qualification for issue id 826
+Worker A3BL2ZEODD79AZ has already granted a qualification for issue id 824
+Worker AFEQQ8ZKHVZFW has already granted a qualification for issue id 824
+Worker A22X4H4XWMRFG7 has already granted a qualification for issue id 824
+Worker A3H2Z8DCHVGTO6 has already granted a qualification for issue id 824
+Worker A24ROQ4MB9C29M has already granted a qualification for issue id 824
+Worker A3RKC05CTZRX2M has already granted a qualification for issue id 824
+Worker A2XGOBIWUDYLOT has already granted a qualification for issue id 824
+Worker AFEQQ8ZKHVZFW has already granted a qualification for issue id 821
+Worker AG8PCITDPLLKU has already granted a qualification for issue id 821
+Worker AYXXMHLZRAPF9 has already granted a qualification for issue id 821
+Worker A1KMXHFW44QOLH has already granted a qualification for issue id 821
+Worker A1G26TDLAIA1B7 has already granted a qualification for issue id 821
+Worker A3RKC05CTZRX2M has already granted a qualification for issue id 821
+Worker AD1ILDUXZHASF has already granted a qualification for issue id 821
+Worker A27TLMSTDJ4UN4 has already granted a qualification for issue id 822
+Worker AYXXMHLZRAPF9 has already granted a qualification for issue id 822
+Worker A3RKC05CTZRX2M has already granted a qualification for issue id 822
+Worker AD1ILDUXZHASF has already granted a qualification for issue id 822
+Worker A1G26TDLAIA1B7 has already granted a qualification for issue id 820
+Worker AG8PCITDPLLKU has already granted a qualification for issue id 820
+finished evaluating
+Start Mturk Util with production
+Some issue is still pending, cannot approve any assignment id
+finished approving
+Start Mturk Util with production
+Some issue is still pending, cannot reject any assignment id
+finished rejecting
+
+> mturk-ts@0.0.1 start /Users/Xu/Desktop/gh_workspace/mturk/mturk-ts
+> npm run build;node ./built/main.js "1"
+
+
+> mturk-ts@0.0.1 build /Users/Xu/Desktop/gh_workspace/mturk/mturk-ts
+> tsc
+
+[ { issue_id: '826',
+    comments: { messages: [Array], messageTypes: [Array] } } ]
+finished posting
+====================================================================================
+====================================================================================
+2018_04_08_15_56_09
+
+> mturk-ts@0.0.1 start /Users/Xu/Desktop/gh_workspace/mturk/mturk-ts
+> npm run build;node ./built/main.js "2"
+
+
+> mturk-ts@0.0.1 build /Users/Xu/Desktop/gh_workspace/mturk/mturk-ts
+> tsc
+
+all done writing
+finished retrieving
+Start Mturk Util with production
+Worker A27TLMSTDJ4UN4 has already granted a qualification for issue id 826
+Worker APD8A11HXR94C has already granted a qualification for issue id 826
+Worker AFEQQ8ZKHVZFW has already granted a qualification for issue id 826
+Worker A3F3GKHC1OYHDY has already granted a qualification for issue id 831
+Worker A27TLMSTDJ4UN4 has already granted a qualification for issue id 831
+Worker ATUCZB2W7VVI7 has already granted a qualification for issue id 831
+Worker A27TLMSTDJ4UN4 has already granted a qualification for issue id 829
+Worker A27TLMSTDJ4UN4 has already granted a qualification for issue id 828
+Worker ATUCZB2W7VVI7 has already granted a qualification for issue id 828
+Worker A22X4H4XWMRFG7 has already granted a qualification for issue id 824
+Worker A2XGOBIWUDYLOT has already granted a qualification for issue id 824
+Worker A3RKC05CTZRX2M has already granted a qualification for issue id 824
+Worker AFEQQ8ZKHVZFW has already granted a qualification for issue id 824
+Worker A24ROQ4MB9C29M has already granted a qualification for issue id 824
+Worker A3H2Z8DCHVGTO6 has already granted a qualification for issue id 824
+Worker A3BL2ZEODD79AZ has already granted a qualification for issue id 824
+Worker A1KMXHFW44QOLH has already granted a qualification for issue id 821
+Worker A1G26TDLAIA1B7 has already granted a qualification for issue id 821
+Worker A3RKC05CTZRX2M has already granted a qualification for issue id 821
+Worker AFEQQ8ZKHVZFW has already granted a qualification for issue id 821
+Worker AG8PCITDPLLKU has already granted a qualification for issue id 821
+Worker AYXXMHLZRAPF9 has already granted a qualification for issue id 821
+Worker AD1ILDUXZHASF has already granted a qualification for issue id 821
+Worker A3RKC05CTZRX2M has already granted a qualification for issue id 822
+Worker A27TLMSTDJ4UN4 has already granted a qualification for issue id 822
+Worker AYXXMHLZRAPF9 has already granted a qualification for issue id 822
+Worker AD1ILDUXZHASF has already granted a qualification for issue id 822
+finished evaluating
+Start Mturk Util with production
+Some issue is still pending, cannot approve any assignment id
+finished approving
+Start Mturk Util with production
+Some issue is still pending, cannot reject any assignment id
+finished rejecting
+
+> mturk-ts@0.0.1 start /Users/Xu/Desktop/gh_workspace/mturk/mturk-ts
+> npm run build;node ./built/main.js "1"
+
+
+> mturk-ts@0.0.1 build /Users/Xu/Desktop/gh_workspace/mturk/mturk-ts
+> tsc
+
+The number of pending HITs is maximum: 4
+finished posting
+====================================================================================
+====================================================================================
+2018_04_08_16_06_34
+
+> mturk-ts@0.0.1 start /Users/Xu/Desktop/gh_workspace/mturk/mturk-ts
+> npm run build;node ./built/main.js "2"
+
+
+> mturk-ts@0.0.1 build /Users/Xu/Desktop/gh_workspace/mturk/mturk-ts
+> tsc
+
+all done writing
+finished retrieving
+Start Mturk Util with production
+Worker AFEQQ8ZKHVZFW has already granted a qualification for issue id 826
+Worker A27TLMSTDJ4UN4 has already granted a qualification for issue id 826
+Worker APD8A11HXR94C has already granted a qualification for issue id 826
+Worker A3RKC05CTZRX2M has already granted a qualification for issue id 826
+Worker A27TLMSTDJ4UN4 has already granted a qualification for issue id 831
+Worker ATUCZB2W7VVI7 has already granted a qualification for issue id 831
+Worker A3F3GKHC1OYHDY has already granted a qualification for issue id 831
+Worker A27TLMSTDJ4UN4 has already granted a qualification for issue id 829
+Worker A3RKC05CTZRX2M has already granted a qualification for issue id 829
+Worker A27TLMSTDJ4UN4 has already granted a qualification for issue id 828
+Worker ATUCZB2W7VVI7 has already granted a qualification for issue id 828
+Worker AFEQQ8ZKHVZFW has already granted a qualification for issue id 824
+Worker A24ROQ4MB9C29M has already granted a qualification for issue id 824
+Worker A1LBWLYCEEWNHZ has already granted a qualification for issue id 824
+Worker A3BL2ZEODD79AZ has already granted a qualification for issue id 824
+Worker A3H2Z8DCHVGTO6 has already granted a qualification for issue id 824
+Worker A22X4H4XWMRFG7 has already granted a qualification for issue id 824
+Worker A2XGOBIWUDYLOT has already granted a qualification for issue id 824
+Worker A3RKC05CTZRX2M has already granted a qualification for issue id 824
+Worker AFEQQ8ZKHVZFW has already granted a qualification for issue id 821
+Worker A1G26TDLAIA1B7 has already granted a qualification for issue id 821
+Worker AG8PCITDPLLKU has already granted a qualification for issue id 821
+Worker AD1ILDUXZHASF has already granted a qualification for issue id 821
+Worker AYXXMHLZRAPF9 has already granted a qualification for issue id 821
+Worker A1KMXHFW44QOLH has already granted a qualification for issue id 821
+Worker A3RKC05CTZRX2M has already granted a qualification for issue id 821
+Worker A27TLMSTDJ4UN4 has already granted a qualification for issue id 822
+Worker AD1ILDUXZHASF has already granted a qualification for issue id 822
+Worker AYXXMHLZRAPF9 has already granted a qualification for issue id 822
+Worker A3RKC05CTZRX2M has already granted a qualification for issue id 822
+finished evaluating
+Start Mturk Util with production
+Some issue is still pending, cannot approve any assignment id
+finished approving
+Start Mturk Util with production
+Some issue is still pending, cannot reject any assignment id
+finished rejecting
+
+> mturk-ts@0.0.1 start /Users/Xu/Desktop/gh_workspace/mturk/mturk-ts
+> npm run build;node ./built/main.js "1"
+
+
+> mturk-ts@0.0.1 build /Users/Xu/Desktop/gh_workspace/mturk/mturk-ts
+> tsc
+
+[ { issue_id: '828',
+    comments: { messages: [Array], messageTypes: [Array] } },
+  { issue_id: '832',
+    comments: { messages: [Array], messageTypes: [Array] } },
+  { issue_id: '833',
+    comments: { messages: [Array], messageTypes: [Array] } } ]
+finished posting
+====================================================================================
+====================================================================================

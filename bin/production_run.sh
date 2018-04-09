@@ -2,7 +2,7 @@
 set -x
 
 counter=1
-while [ $counter -le 1 ]
+while [ $counter -le 15 ]
 do
   ((counter++)) >> /Users/Xu/Desktop/gh_workspace/mturk/mturk-ts/log.txt
 
@@ -27,5 +27,5 @@ do
   echo "====================================================================================" >> /Users/Xu/Desktop/gh_workspace/mturk/mturk-ts/log.txt
   echo "====================================================================================" >> /Users/Xu/Desktop/gh_workspace/mturk/mturk-ts/log.txt
 
-  sleep 1800
+  sleep 600s
 done
