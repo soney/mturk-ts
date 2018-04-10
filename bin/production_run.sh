@@ -1,31 +1,50 @@
 #!/bin/bash
 set -x
 
-counter=1
-while [ $counter -le 15 ]
+if [ "$#" -ne 1 ]; then
+  echo "Please provide posting data directory"
+  exit 1
+fi
+
+dataFilePath=$1
+logPath="$PWD/log.txt"
+round=1
+startTime="`date +%Y_%m_%d_%H_%M_%S`"
+echo "Run MTurk task $startTime" >> $logPath
+while [ $round -le 5 ]
 do
-  ((counter++)) >> /Users/Xu/Desktop/gh_workspace/mturk/mturk-ts/log.txt
+  echo "start round $round" >> $logPath
+  counter=1
+  while [ $counter -le 10 ]
+  do
+    echo "start subround $counter" >> $logPath
 
-  current_date_time="`date +%Y_%m_%d_%H_%M_%S`"
-  echo $current_date_time >> /Users/Xu/Desktop/gh_workspace/mturk/mturk-ts/log.txt
+    current_date_time="`date +%Y_%m_%d_%H_%M_%S`"
+    echo $current_date_time >> $logPath
 
-  npm start 2 >> /Users/Xu/Desktop/gh_workspace/mturk/mturk-ts/log.txt
-  echo "finished retrieving" >> /Users/Xu/Desktop/gh_workspace/mturk/mturk-ts/log.txt
+    npm start 2 >> $logPath
+    echo "finished retrieving" >> $logPath
 
-  python3 mturk_util.py 2 e >> /Users/Xu/Desktop/gh_workspace/mturk/mturk-ts/log.txt
-  echo "finished evaluating" >> /Users/Xu/Desktop/gh_workspace/mturk/mturk-ts/log.txt
+    python3 mturk_util.py 2 e >> $logPath
+    echo "finished evaluating" >> $logPath
 
-  python3 mturk_util.py 2 a >> /Users/Xu/Desktop/gh_workspace/mturk/mturk-ts/log.txt
-  echo "finished approving" >> /Users/Xu/Desktop/gh_workspace/mturk/mturk-ts/log.txt
+    python3 mturk_util.py 2 a >> $logPath
+    echo "finished approving" >> $logPath
 
-  python3 mturk_util.py 2 r >> /Users/Xu/Desktop/gh_workspace/mturk/mturk-ts/log.txt
-  echo "finished rejecting" >> /Users/Xu/Desktop/gh_workspace/mturk/mturk-ts/log.txt
+    python3 mturk_util.py 2 r >> $logPath
+    echo "finished rejecting" >> $logPath
 
-  npm start 1 >> /Users/Xu/Desktop/gh_workspace/mturk/mturk-ts/log.txt
-  echo "finished posting" >> /Users/Xu/Desktop/gh_workspace/mturk/mturk-ts/log.txt
+    npm start 1 $dataFilePath >> $logPath
+    echo "finished posting" >> $logPath
 
-  echo "====================================================================================" >> /Users/Xu/Desktop/gh_workspace/mturk/mturk-ts/log.txt
-  echo "====================================================================================" >> /Users/Xu/Desktop/gh_workspace/mturk/mturk-ts/log.txt
+    echo "finish subround $counter" >> $logPath
+    echo "====================================================================================" >> $logPath
+    echo "====================================================================================" >> $logPath
 
-  sleep 600s
+    ((counter++))
+    sleep 600s
+  done
+  echo "finish round $round" >> $logPath
+  ((round++))
+  sleep 1800s
 done

@@ -632,3 +632,254 @@ finished rejecting
 finished posting
 ====================================================================================
 ====================================================================================
+Run MTurk task 2018_04_10_01_40_03
+Run MTurk task 2018_04_10_01_40_28
+Run MTurk task 2018_04_10_01_44_12
+Run MTurk task 2018_04_10_01_44_32
+start round 1
+start subround 1
+2018_04_10_01_44_32
+
+> mturk-ts@0.0.1 start /Users/Xu/Desktop/gh_workspace/mturk/mturk-ts
+> npm run build;node ./built/main.js "2"
+
+
+> mturk-ts@0.0.1 build /Users/Xu/Desktop/gh_workspace/mturk/mturk-ts
+> tsc
+
+all done writing
+finished retrieving
+Start Mturk Util with production
+Worker A3RKC05CTZRX2M has already granted a qualification for issue id 832
+Worker A1A6DUWWGNEE4W has already granted a qualification for issue id 832
+Worker A1DCKRRPA4AWVD has already granted a qualification for issue id 832
+Worker A6QPWCMTYY3LG has already granted a qualification for issue id 832
+Worker A3RKC05CTZRX2M has already granted a qualification for issue id 833
+Worker A1A6DUWWGNEE4W has already granted a qualification for issue id 833
+Worker A1UA911OAE2KFJ has already granted a qualification for issue id 833
+Worker A1MMYU018LRNIC has already granted a qualification for issue id 833
+Worker A27TLMSTDJ4UN4 has already granted a qualification for issue id 828
+Worker A3RKC05CTZRX2M has already granted a qualification for issue id 828
+Worker A1DCKRRPA4AWVD has already granted a qualification for issue id 828
+Worker A1RATFICCKLCQ has already granted a qualification for issue id 828
+Worker AFEQQ8ZKHVZFW has already granted a qualification for issue id 828
+Worker A28BM3PLKJXSTQ has already granted a qualification for issue id 828
+Worker A1T4SM1PG43714 has already granted a qualification for issue id 828
+Worker ATUCZB2W7VVI7 has already granted a qualification for issue id 828
+Worker A27TLMSTDJ4UN4 has already granted a qualification for issue id 826
+Worker A3RKC05CTZRX2M has already granted a qualification for issue id 826
+Worker A3HSZQ7UASNEQB has already granted a qualification for issue id 826
+Worker AFEQQ8ZKHVZFW has already granted a qualification for issue id 826
+Worker APD8A11HXR94C has already granted a qualification for issue id 826
+Worker A3F3GKHC1OYHDY has already granted a qualification for issue id 831
+Worker A27TLMSTDJ4UN4 has already granted a qualification for issue id 831
+Worker AFEQQ8ZKHVZFW has already granted a qualification for issue id 831
+Worker ATUCZB2W7VVI7 has already granted a qualification for issue id 831
+Worker A27TLMSTDJ4UN4 has already granted a qualification for issue id 829
+Worker A3RKC05CTZRX2M has already granted a qualification for issue id 829
+Worker A24ROQ4MB9C29M has already granted a qualification for issue id 824
+Worker A3RKC05CTZRX2M has already granted a qualification for issue id 824
+Worker A1LBWLYCEEWNHZ has already granted a qualification for issue id 824
+Worker A3BL2ZEODD79AZ has already granted a qualification for issue id 824
+Worker AFEQQ8ZKHVZFW has already granted a qualification for issue id 824
+Worker A2XGOBIWUDYLOT has already granted a qualification for issue id 824
+Worker A3H2Z8DCHVGTO6 has already granted a qualification for issue id 824
+Worker A22X4H4XWMRFG7 has already granted a qualification for issue id 824
+finished evaluating
+Start Mturk Util with production
+Approve failed: the assignment status is not submitted but Approved
+Approve failed: the assignment status is not submitted but Approved
+Approve failed: the assignment status is not submitted but Approved
+Approve failed: the assignment status is not submitted but Approved
+Approve failed: the assignment status is not submitted but Approved
+Approve failed: the assignment status is not submitted but Approved
+Approve failed: the assignment status is not submitted but Approved
+Approve failed: the assignment status is not submitted but Approved
+Approve failed: the assignment status is not submitted but Approved
+Approve failed: the assignment status is not submitted but Approved
+Approve failed: the assignment status is not submitted but Approved
+Approve failed: the assignment status is not submitted but Approved
+Approve failed: the assignment status is not submitted but Approved
+Approve failed: the assignment status is not submitted but Approved
+finished approving
+Start Mturk Util with production
+Reject failed: the assignment status is not submitted but Rejected
+Reject failed: the assignment status is not submitted but Rejected
+Reject failed: the assignment status is not submitted but Rejected
+Reject failed: the assignment status is not submitted but Rejected
+finished rejecting
+
+> mturk-ts@0.0.1 start /Users/Xu/Desktop/gh_workspace/mturk/mturk-ts
+> npm run build;node ./built/main.js "1" "/Users/Xu/Desktop/gh_workspace/memoized_db"
+
+
+> mturk-ts@0.0.1 build /Users/Xu/Desktop/gh_workspace/mturk/mturk-ts
+> tsc
+
+finished posting
+finish subround 1
+====================================================================================
+====================================================================================
+Run MTurk task 2018_04_10_01_48_24
+start round 1
+start subround 1
+2018_04_10_01_48_24
+
+> mturk-ts@0.0.1 start /Users/Xu/Desktop/gh_workspace/mturk/mturk-ts
+> npm run build;node ./built/main.js "2"
+
+
+> mturk-ts@0.0.1 build /Users/Xu/Desktop/gh_workspace/mturk/mturk-ts
+> tsc
+
+all done writing
+finished retrieving
+Start Mturk Util with production
+Worker A1DCKRRPA4AWVD has already granted a qualification for issue id 832
+Worker A1A6DUWWGNEE4W has already granted a qualification for issue id 832
+Worker A6QPWCMTYY3LG has already granted a qualification for issue id 832
+Worker A3RKC05CTZRX2M has already granted a qualification for issue id 832
+Worker A1UA911OAE2KFJ has already granted a qualification for issue id 833
+Worker A1A6DUWWGNEE4W has already granted a qualification for issue id 833
+Worker A1MMYU018LRNIC has already granted a qualification for issue id 833
+Worker A3RKC05CTZRX2M has already granted a qualification for issue id 833
+Worker ATUCZB2W7VVI7 has already granted a qualification for issue id 828
+Worker A1T4SM1PG43714 has already granted a qualification for issue id 828
+Worker A1DCKRRPA4AWVD has already granted a qualification for issue id 828
+Worker A28BM3PLKJXSTQ has already granted a qualification for issue id 828
+Worker A3RKC05CTZRX2M has already granted a qualification for issue id 828
+Worker A1RATFICCKLCQ has already granted a qualification for issue id 828
+Worker AFEQQ8ZKHVZFW has already granted a qualification for issue id 828
+Worker A27TLMSTDJ4UN4 has already granted a qualification for issue id 828
+Worker A3RKC05CTZRX2M has already granted a qualification for issue id 826
+Worker A3HSZQ7UASNEQB has already granted a qualification for issue id 826
+Worker APD8A11HXR94C has already granted a qualification for issue id 826
+Worker AFEQQ8ZKHVZFW has already granted a qualification for issue id 826
+Worker A27TLMSTDJ4UN4 has already granted a qualification for issue id 826
+Worker ATUCZB2W7VVI7 has already granted a qualification for issue id 831
+Worker A3F3GKHC1OYHDY has already granted a qualification for issue id 831
+Worker AFEQQ8ZKHVZFW has already granted a qualification for issue id 831
+Worker A27TLMSTDJ4UN4 has already granted a qualification for issue id 831
+Worker A27TLMSTDJ4UN4 has already granted a qualification for issue id 829
+Worker A3RKC05CTZRX2M has already granted a qualification for issue id 829
+Worker A24ROQ4MB9C29M has already granted a qualification for issue id 824
+Worker A1LBWLYCEEWNHZ has already granted a qualification for issue id 824
+Worker A3BL2ZEODD79AZ has already granted a qualification for issue id 824
+Worker A3H2Z8DCHVGTO6 has already granted a qualification for issue id 824
+Worker A3RKC05CTZRX2M has already granted a qualification for issue id 824
+Worker A2XGOBIWUDYLOT has already granted a qualification for issue id 824
+Worker A22X4H4XWMRFG7 has already granted a qualification for issue id 824
+Worker AFEQQ8ZKHVZFW has already granted a qualification for issue id 824
+finished evaluating
+Start Mturk Util with production
+Approve failed: the assignment status is not submitted but Approved
+Approve failed: the assignment status is not submitted but Approved
+Approve failed: the assignment status is not submitted but Approved
+Approve failed: the assignment status is not submitted but Approved
+Approve failed: the assignment status is not submitted but Approved
+Approve failed: the assignment status is not submitted but Approved
+Approve failed: the assignment status is not submitted but Approved
+Approve failed: the assignment status is not submitted but Approved
+Approve failed: the assignment status is not submitted but Approved
+Approve failed: the assignment status is not submitted but Approved
+Approve failed: the assignment status is not submitted but Approved
+Approve failed: the assignment status is not submitted but Approved
+Approve failed: the assignment status is not submitted but Approved
+Approve failed: the assignment status is not submitted but Approved
+Approve failed: the assignment status is not submitted but Approved
+Approve failed: the assignment status is not submitted but Approved
+Approve failed: the assignment status is not submitted but Approved
+Approve failed: the assignment status is not submitted but Approved
+Approve failed: the assignment status is not submitted but Approved
+Approve failed: the assignment status is not submitted but Approved
+Approve failed: the assignment status is not submitted but Approved
+Approve failed: the assignment status is not submitted but Approved
+Approve failed: the assignment status is not submitted but Approved
+Approve failed: the assignment status is not submitted but Approved
+Approve failed: the assignment status is not submitted but Approved
+Approve failed: the assignment status is not submitted but Approved
+Approve failed: the assignment status is not submitted but Approved
+Approve failed: the assignment status is not submitted but Approved
+Approve failed: the assignment status is not submitted but Approved
+Approve failed: the assignment status is not submitted but Approved
+Approve failed: the assignment status is not submitted but Approved
+Approve failed: the assignment status is not submitted but Approved
+Approve failed: the assignment status is not submitted but Approved
+Approve failed: the assignment status is not submitted but Approved
+Approve failed: the assignment status is not submitted but Approved
+Approve failed: the assignment status is not submitted but Approved
+Approve failed: the assignment status is not submitted but Approved
+Approve failed: the assignment status is not submitted but Approved
+Approve failed: the assignment status is not submitted but Approved
+Approve failed: the assignment status is not submitted but Approved
+Approve failed: the assignment status is not submitted but Approved
+Approve failed: the assignment status is not submitted but Approved
+Approve failed: the assignment status is not submitted but Approved
+Approve failed: the assignment status is not submitted but Approved
+Approve failed: the assignment status is not submitted but Approved
+Approve failed: the assignment status is not submitted but Approved
+Approve failed: the assignment status is not submitted but Approved
+Approve failed: the assignment status is not submitted but Approved
+Approve failed: the assignment status is not submitted but Approved
+Approve failed: the assignment status is not submitted but Approved
+Approve failed: the assignment status is not submitted but Approved
+Approve failed: the assignment status is not submitted but Approved
+Approve failed: the assignment status is not submitted but Approved
+Approve failed: the assignment status is not submitted but Approved
+Approve failed: the assignment status is not submitted but Approved
+Approve failed: the assignment status is not submitted but Approved
+Approve failed: the assignment status is not submitted but Approved
+Approve failed: the assignment status is not submitted but Approved
+Approve failed: the assignment status is not submitted but Approved
+Approve failed: the assignment status is not submitted but Approved
+Approve failed: the assignment status is not submitted but Approved
+Approve failed: the assignment status is not submitted but Approved
+Approve failed: the assignment status is not submitted but Approved
+Approve failed: the assignment status is not submitted but Approved
+Approve failed: the assignment status is not submitted but Approved
+Approve failed: the assignment status is not submitted but Approved
+Approve failed: the assignment status is not submitted but Approved
+Approve failed: the assignment status is not submitted but Approved
+Approve failed: the assignment status is not submitted but Approved
+Approve failed: the assignment status is not submitted but Approved
+Approve failed: the assignment status is not submitted but Approved
+Approve failed: the assignment status is not submitted but Approved
+Approve failed: the assignment status is not submitted but Approved
+Approve failed: the assignment status is not submitted but Approved
+Approve failed: the assignment status is not submitted but Approved
+Approve failed: the assignment status is not submitted but Approved
+Approve failed: the assignment status is not submitted but Approved
+Approve failed: the assignment status is not submitted but Approved
+Approve failed: the assignment status is not submitted but Approved
+Approve failed: the assignment status is not submitted but Approved
+Approve failed: the assignment status is not submitted but Approved
+finished approving
+Start Mturk Util with production
+Reject failed: the assignment status is not submitted but Rejected
+Reject failed: the assignment status is not submitted but Rejected
+Reject failed: the assignment status is not submitted but Rejected
+Reject failed: the assignment status is not submitted but Rejected
+Reject failed: the assignment status is not submitted but Rejected
+Reject failed: the assignment status is not submitted but Rejected
+Reject failed: the assignment status is not submitted but Rejected
+finished rejecting
+
+> mturk-ts@0.0.1 start /Users/Xu/Desktop/gh_workspace/mturk/mturk-ts
+> npm run build;node ./built/main.js "1" "/Users/Xu/Desktop/gh_workspace/memoized_db"
+
+
+> mturk-ts@0.0.1 build /Users/Xu/Desktop/gh_workspace/mturk/mturk-ts
+> tsc
+
+[ { issue_id: '832',
+    comments: { messages: [Array], messageTypes: [Array] } },
+  { issue_id: '833',
+    comments: { messages: [Array], messageTypes: [Array] } },
+  { issue_id: '835',
+    comments: { messages: [Array], messageTypes: [Array] } },
+  { issue_id: '836',
+    comments: { messages: [Array], messageTypes: [Array] } } ]
+finished posting
+finish subround 1
+====================================================================================
+====================================================================================

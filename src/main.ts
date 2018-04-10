@@ -50,7 +50,7 @@ const TIME_PER_COMMENT_IN_SECONDS:number = 300;
 const MAX_NUM_PENDING_HITS:number = 4;
 const mturk = new MechanicalTurk();
 
-function post_hits(){
+function post_hits(data_path:string){
   let cwd:string = process.cwd();
   let posted_status = require(cwd + RECORD_DATA_PATH + '/no_post.json');
   let pending_list = posted_status['pending'];
@@ -63,7 +63,7 @@ function post_hits(){
     return;
   }
   // need to post at least one new HIT
-  listFiles(PATH).then(files => {
+  listFiles(data_path).then(files => {
     let new_HITs:HIT[] = [];
     let finished:boolean = false;
     for (let file in files){
@@ -180,7 +180,7 @@ function post_hits(){
         break;
       }
     }
-    const issueIdToQId = require('../issue_qualification.json');
+    const issueIdToQId = require(process.cwd() + RECORD_DATA_PATH + "/issue_qualification.json");
     (async () => {
       console.log(new_HITs);
       await mturk.processTemplateFile(GHDiscussionTemplate, 'GithubDiscussion.xml.dot');
@@ -222,9 +222,8 @@ function post_hits(){
           }
         }
       }
-      let cwd:string = process.cwd();
-      writeFile(cwd + RECORD_DATA_PATH + "/bad_issue_ids.json", JSON.stringify(bad_issue_ids));
-      writeFile(cwd + RECORD_DATA_PATH + "/issue_qualification.json", JSON.stringify(issueIdToQId));
+      writeFile(process.cwd() + RECORD_DATA_PATH + "/bad_issue_ids.json", JSON.stringify(bad_issue_ids));
+      writeFile(process.cwd() + RECORD_DATA_PATH + "/issue_qualification.json", JSON.stringify(issueIdToQId));
     })();
   });
 }
@@ -316,18 +315,17 @@ function retrieve_results() {
           }
         }
       });
-      // if there are assignments, add to respones
+      // if there are assignments, add to responses
       const assignments = await h.listAssignments();
       await assignments.forEach((a, i) => {
         a.getAnswers().forEach((v, k) => {
           let worker_id:string = a.getWorkerId();
-          let respones:Map<string, {"assignment_id":string, "response":Array<string>}> = HITs_status.get(k).responses;
-          respones.set(worker_id, {"assignment_id": a.getID(), "response": v});
+          let response:Map<string, {"assignment_id":string, "response":Array<string>}> = HITs_status.get(k).responses;
+          response.set(worker_id, {"assignment_id": a.getID(), "response": v});
         });
       });
     });
     await Promise.all(writePromises);
-    let p:string = process.cwd() + RAW_RESPONSES_PATH + '/resultxxxx.json';
     let date:Date = new Date();
     let day:string = date.toLocaleDateString();
     let time:string = date.toLocaleTimeString();
@@ -338,13 +336,22 @@ function retrieve_results() {
   })();
 }
 
-for (let j = 0; j != process.argv.length; ++j){
-  if (j === 2) {
-    if (process.argv[j] === '1') {
-      post_hits();
+if (process.argv.length < 3){
+  console.log('Please provide mode, 1 for posting new HITs and 2 for retrieving responses');
+  process.exit(1);
+} else {
+  const mode:string = process.argv[2];
+  if (mode === '1'){
+    if (process.argv.length < 4){
+      console.log('Please provide the location/directory of data files');
+      process.exit(1);
     }
-    else {
-      retrieve_results();
-    }
+    const data_path:string = process.argv[3];
+    post_hits(data_path);
+  } else if (mode === '2'){
+    retrieve_results();
+  } else {
+    console.log('Please provide mode, 1 for posting new HITs and 2 for retrieving responses');
+    process.exit(1);
   }
 }

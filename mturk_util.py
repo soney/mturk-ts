@@ -7,7 +7,6 @@ import os
 
 class MturkUtil:
     MTURK_SANDBOX = 'https://mturk-requester-sandbox.us-east-1.amazonaws.com'
-    # RAW_FILE = 'result.json'
     RAW_FILE_PATH = 'raw_responses'
     CREDS = 'mturk_creds.json'
     RECORD_PATH = 'record_data'
