@@ -41,10 +41,12 @@ do
     echo "====================================================================================" >> $logPath
     echo "====================================================================================" >> $logPath
 
-    ((counter++))
+    #((counter++))
+    counter=$((counter+1))
     sleep 600s
   done
   echo "finish round $round" >> $logPath
-  ((round++))
+  #((round++))
+  round=$((round+1))
   sleep 1800s
 done
