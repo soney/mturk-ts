@@ -42,6 +42,8 @@ interface Qualification {
 }
 
 const GHDiscussionTemplate:string = 'GithubDiscussionTemplate';
+const RECORD_DATA_PATH:string = '/record_data'
+const RAW_RESPONSES_PATH:string = '/raw_responses'
 const PATH:string = '/Users/Xu/Desktop/gh_workspace/memoized_db';
 const RATE:number = 0.02;
 const TIME_PER_COMMENT_IN_SECONDS:number = 300;
@@ -49,19 +51,18 @@ const MAX_NUM_PENDING_HITS:number = 4;
 const mturk = new MechanicalTurk();
 
 function post_hits(){
-  let posted_status = require('../no_post.json');
+  let cwd:string = process.cwd();
+  let posted_status = require(cwd + RECORD_DATA_PATH + '/no_post.json');
   let pending_list = posted_status['pending'];
-  let completed = posted_status['completed']
-  let bad_issue_ids = require('../bad_issue_ids.json');
+  let completed_list = posted_status['completed']
+  let bad_issue_ids = require(cwd + RECORD_DATA_PATH + '/bad_issue_ids.json');
   let new_posts_num = MAX_NUM_PENDING_HITS - pending_list.length;
 
   if (new_posts_num <= 0){
     console.log('The number of pending HITs is maximum: ' + MAX_NUM_PENDING_HITS);
     return;
   }
-
   // need to post at least one new HIT
-  let completed_list = posted_status.completed;
   listFiles(PATH).then(files => {
     let new_HITs:HIT[] = [];
     let finished:boolean = false;
@@ -221,8 +222,9 @@ function post_hits(){
           }
         }
       }
-      writeFile("bad_issue_ids.json", JSON.stringify(bad_issue_ids));
-      writeFile("issue_qualification.json", JSON.stringify(issueIdToQId));
+      let cwd:string = process.cwd();
+      writeFile(cwd + RECORD_DATA_PATH + "/bad_issue_ids.json", JSON.stringify(bad_issue_ids));
+      writeFile(cwd + RECORD_DATA_PATH + "/issue_qualification.json", JSON.stringify(issueIdToQId));
     })();
   });
 }
@@ -257,7 +259,11 @@ function jsonToMap(jsonStr:string):Map<string, any> {
 
 async function writeFile(filename:string, contents:string):Promise<void> {
   return new Promise<void>((resolve, reject) => {
-    fs.writeFile(filename, contents, () => {
+    fs.writeFile(filename, contents, (err) => {
+      if (err) {
+        console.log(err);
+        reject();
+      }
       resolve();
     })
   });
@@ -321,7 +327,13 @@ function retrieve_results() {
       });
     });
     await Promise.all(writePromises);
-    writeFile("result.json", getResult(HITs_status));
+    let p:string = process.cwd() + RAW_RESPONSES_PATH + '/resultxxxx.json';
+    let date:Date = new Date();
+    let day:string = date.toLocaleDateString();
+    let time:string = date.toLocaleTimeString();
+    let dayTime:string = day + '-' + time;
+    const path:string = process.cwd() + RAW_RESPONSES_PATH + '/result_' + dayTime + '.json';
+    writeFile(path, getResult(HITs_status));
     console.log('all done writing');
   })();
 }
