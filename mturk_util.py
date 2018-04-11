@@ -13,7 +13,9 @@ class MturkUtil:
     COMPLETED = os.path.join(RECORD_PATH, 'completed.json')
     PROCESS = os.path.join(RECORD_PATH, 'process.json')
     APPROVE = os.path.join(RECORD_PATH, 'approve_ids.json')
+    APPROVED = os.path.join(RECORD_PATH, 'approved.json')
     REJECT = os.path.join(RECORD_PATH, 'reject_ids.json')
+    REJECTED = os.path.join(RECORD_PATH, 'rejected.json')
     ISSUE_FEEDBACK = os.path.join(RECORD_PATH, 'issue_feedback.json')
     ISSUE_QUALIFICATION = os.path.join(RECORD_PATH, 'issue_qualification.json')
     NO_POST = os.path.join(RECORD_PATH, 'no_post.json')
@@ -45,9 +47,15 @@ class MturkUtil:
         with open(self.APPROVE, 'r') as f:
             self.approve = set(json.load(f))
 
+        with open(self.APPROVED, 'r') as f:
+            self.approved = set(json.load(f))
+
         # read reject ids
         with open(self.REJECT, 'r') as f:
             self.reject = set(json.load(f))
+
+        with open(self.REJECTED, 'r') as f:
+            self.rejected = set(json.load(f))
 
         with open(self.ISSUE_QUALIFICATION, 'r') as f:
             self.issue_qualification = json.load(f)
@@ -80,23 +88,8 @@ class MturkUtil:
                 OverrideRejection=override
             )
         else:
-            print("Approve failed: the assignment status is not submitted but {}".format(status))
-
-    def approve_all_assignments(self):
-        if len(self.no_post['pending']) > 0:
-            print("Some issue is still pending, cannot approve any assignment id")
-            return
-
-        for assignment_id in self.approve:
-            self.approve_assignment(assignment_id)
-
-    def reject_all_assignments(self):
-        if len(self.no_post['pending']) > 0:
-            print("Some issue is still pending, cannot reject any assignment id")
-            return
-
-        for assignment_id in self.reject:
-            self.reject_assignment(assignment_id, feedback='You get less than {}% label(s) correct'.format(self.CORRECT_RATE * 100))
+            status = ''
+        return status
 
     def reject_assignment(self, assignment_id, feedback=''):
         status = self.client.get_assignment(AssignmentId=assignment_id)['Assignment']['AssignmentStatus']
@@ -106,7 +99,42 @@ class MturkUtil:
                 RequesterFeedback=feedback
             )
         else:
-            print("Reject failed: the assignment status is not submitted but {}".format(status))
+            status = ''
+        return status
+
+    def approve_all_assignments(self):
+        if len(self.no_post['pending']) > 0:
+            print("Some issue is still pending, cannot approve any assignment id")
+            return
+
+        temp_set = set()
+        for assignment_id in self.approve:
+            if not self.approve_assignment(assignment_id):
+                temp_set.add(assignment_id)
+        self.approve = self.approve - temp_set
+        self.approved.update(temp_set)
+
+        with open(self.APPROVE, 'w') as f:
+            f.write(json.dumps(list(self.approve)))
+        with open(self.APPROVED, 'w') as f:
+            f.write(json.dumps(list(self.approved)))
+
+    def reject_all_assignments(self):
+        if len(self.no_post['pending']) > 0:
+            print("Some issue is still pending, cannot reject any assignment id")
+            return
+
+        temp_set = set()
+        for assignment_id in self.reject:
+            if not self.reject_assignment(assignment_id, feedback='You did not get enough labels correct'):
+                temp_set.add(assignment_id)
+        self.reject = self.reject - temp_set
+        self.rejected.update(temp_set)
+
+        with open(self.REJECT, 'w') as f:
+            f.write(json.dumps(list(self.reject)))
+        with open(self.REJECTED, 'w') as f:
+            f.write(json.dumps(list(self.rejected)))
 
     def process_raw_data(self):
         raw_responses = os.listdir(self.RAW_FILE_PATH)
@@ -263,9 +291,11 @@ class MturkUtil:
                 if correct_count / len(self.completed[issue_id]) >= self.CORRECT_RATE:
                     if assignment_id in self.reject:
                         self.reject.remove(assignment_id)
-                    self.approve.add(assignment_id)
+                    if assignment_id not in self.approved:
+                        self.approve.add(assignment_id)
                 else:
-                    self.reject.add(assignment_id)
+                    if assignment_id not in self.rejected:
+                        self.reject.add(assignment_id)
 
         with open(self.APPROVE, 'w') as f:
             f.write(json.dumps(list(self.approve)))
@@ -281,6 +311,10 @@ class MturkUtil:
             res['on_hold_balance'] = float(response['OnHoldBalance'])
         return res
 
+    def get_stats(self):
+        stats = self.get_balance()
+        stats['# finished issue'] = len(self.completed)
+        stats['# total messages/comments'] = sum(len(v) for k, v in self.completed.items())
 
     def evaluate_raw_data(self):
         self.process_raw_data()
@@ -299,7 +333,7 @@ if __name__ == '__main__':
     ACTION_EVALUATE = 'e'
     ACTION_APPROVE = 'a'
     ACTION_REJECT = 'r'
-    ACTION_BALANCE = 'b'
+    ACTION_STATS = 's'
 
     mode = sys.argv[1]
     action = sys.argv[2]
@@ -318,8 +352,8 @@ if __name__ == '__main__':
         mturk_util.approve_all_assignments()
     elif action == ACTION_REJECT:
         mturk_util.reject_all_assignments()
-    elif action == ACTION_BALANCE:
-        print(mturk_util.get_balance())
+    elif action == ACTION_STATS:
+        print(mturk_util.get_stats())
     else:
         print('action can only be e for evaluate, a for approve, b for get balance or r for reject')
         exit(1)
