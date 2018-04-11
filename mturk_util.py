@@ -315,6 +315,7 @@ class MturkUtil:
         stats = self.get_balance()
         stats['# finished issue'] = len(self.completed)
         stats['# total messages/comments'] = sum(len(v) for k, v in self.completed.items())
+        return stats
 
     def evaluate_raw_data(self):
         self.process_raw_data()
