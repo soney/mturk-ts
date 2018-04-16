@@ -81,7 +81,7 @@ class MturkUtil:
 
     def approve_assignment(self, assignment_id, feedback='', override=False):
         status = self.client.get_assignment(AssignmentId=assignment_id)['Assignment']['AssignmentStatus']
-        if status == 'Submitted':
+        if status != 'Approved':
             self.client.approve_assignment(
                 AssignmentId=assignment_id,
                 RequesterFeedback=feedback,
@@ -101,6 +101,26 @@ class MturkUtil:
         else:
             status = ''
         return status
+
+    def override_rejected_with_approve(self, assignment_id):
+        return self.approve_assignment(assignment_id, override=True)
+
+    def override_all_in_file(self, filename):
+        with open(filename, 'r') as f:
+            override_ids = set(json.load(f))
+
+        temp_set = set()
+        for assignment_id in override_ids:
+            if self.override_rejected_with_approve(assignment_id):
+                self.approved.add(assignment_id)
+            else:
+                temp_set.add(assignment_id)
+        override_ids = override_ids - temp_set
+
+        with open(filename, 'w') as f:
+            f.write(json.dumps(list(override_ids)))
+        with open(self.APPROVED, 'w') as f:
+            f.write(json.dumps(list(self.approved)))
 
     def approve_all_assignments(self):
         if len(self.no_post['pending']) > 0:
@@ -326,7 +346,11 @@ if __name__ == '__main__':
     if len(sys.argv) < 3:
         print('Please provide mode action')
         print('\tmode: 1 for sandbox, 2 for production, and')
-        print('\taction: e for evaluate, a for approve assignments, r for reject assignments')
+        print('\taction: '
+              'e for evaluate, '
+              'a for approve assignments, '
+              'r for reject assignments, '
+              'o for override rejected assignments')
         exit(1)
 
     SANDBOX = '1'
@@ -335,6 +359,7 @@ if __name__ == '__main__':
     ACTION_APPROVE = 'a'
     ACTION_REJECT = 'r'
     ACTION_STATS = 's'
+    ACTION_OVERRIDE_REJECT = 'o'
 
     mode = sys.argv[1]
     action = sys.argv[2]
@@ -355,6 +380,16 @@ if __name__ == '__main__':
         mturk_util.reject_all_assignments()
     elif action == ACTION_STATS:
         print(mturk_util.get_stats())
+    elif action == ACTION_OVERRIDE_REJECT:
+        if len(sys.argv) < 4:
+            print('please provide the json file that contains override assignment ids')
+            exit(1)
+        filename = sys.argv[3]
+        mturk_util.override_all_in_file(filename)
     else:
-        print('action can only be e for evaluate, a for approve, b for get balance or r for reject')
+        print('action can only be e for evaluate, '
+              'a for approve, '
+              'r for reject, '
+              'b for get balance, '
+              'o for override rejected assignments')
         exit(1)
