@@ -46,6 +46,7 @@ class ResultAssembler:
             need_header = True
 
         data_files = os.listdir(self.data_dir)
+        issue_id_set = set()
         new_rows = []
         for data_file in data_files:
             data_file_path = os.path.join(self.data_dir, data_file)
@@ -53,7 +54,7 @@ class ResultAssembler:
                 data_dict = json.load(f)
 
             for issue_id in self.labels:
-                if issue_id in data_dict and issue_id not in recorded_issue_ids:
+                if issue_id in data_dict and issue_id not in recorded_issue_ids and issue_id not in issue_id_set:
                     for comment_id in self.labels[issue_id]:
                         row_dict = {self.FIELD_NAMES[0]: issue_id,
                                     self.FIELD_NAMES[1]: comment_id,
@@ -64,9 +65,9 @@ class ResultAssembler:
                             if comment_id == comment['comment_id']:
                                 row_dict[self.FIELD_NAMES[2]] = comment['body']
                         new_rows.append(row_dict)
+                    issue_id_set.add(issue_id)
 
         sorted(new_rows, key=lambda row: int(row['issue_id']))
-        print(new_rows)
         with open(self.REVIEW_CSV, 'a', newline='') as f:
             writer = csv.DictWriter(f, fieldnames=self.FIELD_NAMES)
             if need_header:
