@@ -1,6 +1,7 @@
 import os
 import json
 import csv
+import sys
 
 class ResultAssembler:
     RECORD_PATH = 'record_data'
@@ -77,6 +78,10 @@ class ResultAssembler:
                 writer.writerow(row)
 
 if __name__ == '__main__':
-    assembler = ResultAssembler('/Users/Xu/Desktop/gh_workspace/memoized_db')
+    if len(sys.argv) < 2:
+        print('Please provide the directory that contains ghtorrent processed json files')
+        exit(1)
+    data_file_dir = sys.argv[1]
+    assembler = ResultAssembler(data_file_dir)
     assembler.get_labels()
     assembler.get_comment_and_labels()

@@ -343,7 +343,7 @@ if (process.argv.length < 3){
   const mode:string = process.argv[2];
   if (mode === '1'){
     if (process.argv.length < 4){
-      console.log('Please provide the location/directory of data files');
+      console.log('Please provide the directory that contains ghtorrent processed json files');
       process.exit(1);
     }
     const data_path:string = process.argv[3];

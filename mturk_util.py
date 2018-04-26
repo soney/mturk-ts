@@ -347,10 +347,11 @@ if __name__ == '__main__':
         print('Please provide mode action')
         print('\tmode: 1 for sandbox, 2 for production, and')
         print('\taction: '
-              'e for evaluate, '
-              'a for approve assignments, '
-              'r for reject assignments, '
-              'o for override rejected assignments')
+              'e for evaluating, '
+              'a for approving assignments, '
+              'r for rejecting assignments, '
+              'o for overriding rejected assignments, '
+              's for getting account balance and simple statistics')
         exit(1)
 
     SANDBOX = '1'
@@ -387,9 +388,10 @@ if __name__ == '__main__':
         filename = sys.argv[3]
         mturk_util.override_all_in_file(filename)
     else:
-        print('action can only be e for evaluate, '
-              'a for approve, '
-              'r for reject, '
-              'b for get balance, '
-              'o for override rejected assignments')
+        print('action can only be '
+              'e for evaluating, '
+              'a for approving, '
+              'r for rejecting, '
+              'o for override rejected assignments, '
+              's for getting balance and simple statistics, ')
         exit(1)
