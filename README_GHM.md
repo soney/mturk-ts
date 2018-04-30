@@ -25,13 +25,13 @@ Because Mturk service does not keep all responses, the files in `record_data` re
 The following are descriptions of intermediate files:
 - `approve_ids.json` contains the latest assignment ids that need to be approved
 - `approved.json` contains all approved assignment ids
-- `bad_issue_ids.json` contains all issue ids that have html tags in the comment bodies
+- `bad_issue_ids.json` contains all issue ids that have html tags in the comment bodies, they will not be posted because the unbalance tags
 - `completed.json` contains all agreed/completed issues
 - `issue_feedback.json` contains the feedback from workers for each issue
 - `issue_qualification.json` contains workers who have granted a qualification for a issue so that they cannot answer the issue again
 - `labels.json` contains labels for all comments in one issue
-- `no_post.json` contains completed issue ids and pending issue ids. Pending issues are issues still posting on Mturk server
-- `process.json` contains all uncompleted issue's intermediate responses
+- `no_post.json` contains completed issue ids and pending issue ids, pending issues are issues still posting on Mturk server
+- `process.json` contains all uncompleted issue's intermediate responses, an uncompleted issue is an issue that has at least one disagreed comment, a disagreed comment is a comment which each label gets at most one support
 - `reject_ids.json` contains the latest assignment ids that need to be rejected
 - `approved.json` contains all rejected assignment ids
 
